@@ -27,9 +27,11 @@ public class Personaje {
         {5, 2},//No se mueve derecha {5,2}
         {106, 27}, {131, 27}, {156, 27}, {181, 27},//movimiento a la derecha
         {22,2},//No se mueve izquierda
-        {123, 27}, {148,27}, {173,27}, {198,27}
+        {123, 27}, {148,27}, {173,27}, {198,27},//movimiento a la izquierda{}
+        {105,2},{130,2},{155,2},{181,2},//salto derecha
+        {122,2},{147,2},{172,2},{198,2}//salto izquierda
     };
-    private boolean seUsoSentidoDeMovimiento;
+    private boolean noPermitirCambioImgMovimiento;
     private Image pjImage;
     
 
@@ -45,7 +47,7 @@ public class Personaje {
         this.posicionXPaint=posicionX;
         this.posicionYPaint=posicionY;
         this.numImagen = 0;
-        this.seUsoSentidoDeMovimiento=false;
+        this.noPermitirCambioImgMovimiento=false;
     };
     
     public void moveRight() {
@@ -58,29 +60,63 @@ public class Personaje {
         else{
             this.numImagen = 5;
         };
-        seUsoSentidoDeMovimiento=false;
     };
 
     public int getNumImagen() {
         return numImagen;
     }
     
-    public void sentidoDeMovimiento(boolean derecha){
-        if(!seUsoSentidoDeMovimiento){
-        if(derecha){
-            if(unidadAnchoImagenOriginal<0){
-                this.numImagen=0;
+    public void sentidoDeMovimiento(boolean derecha,char movement){
+        if(!noPermitirCambioImgMovimiento){
+            if(derecha){
+                if(unidadAnchoImagenOriginal<0){
                 unidadAnchoImagenOriginal *=-1;
-            };
-        }else{
-            if(unidadAnchoImagenOriginal>0){
-                this.numImagen=5;
+                };
+                if ('r' == movement) {
+                    this.numImagen = 0;
+                }
+            }else{
+                if(unidadAnchoImagenOriginal>0){
                 unidadAnchoImagenOriginal *=-1;
+                };
+                if ('r' == movement) {
+                    this.numImagen = 5;
+                }
             };
-        };
-        seUsoSentidoDeMovimiento=true;
+        noPermitirCambioImgMovimiento=true;
         };
     };
+    
+    public void sentidoDeMovimiento(boolean derecha){
+        if (derecha) {
+            if (unidadAnchoImagenOriginal < 0) {
+                unidadAnchoImagenOriginal *= -1;
+            }
+        } else {
+            if (unidadAnchoImagenOriginal > 0) {
+                unidadAnchoImagenOriginal *= -1;
+            }
+        };
+//        noPermitirCambioImgMovimiento = true;
+    }
+    
+    public void sentidoDeMovimiento(char movement){
+        if(!noPermitirCambioImgMovimiento){
+        if(movement=='j'){
+            if(unidadAnchoImagenOriginal>0){
+                this.numImagen = 10;
+            }
+            if(unidadAnchoImagenOriginal<0){
+                this.numImagen = 14;
+            }
+        }
+        noPermitirCambioImgMovimiento=true;
+        }
+    }
+
+    public void noPermitirCambioImgMovimiento(boolean noPermitirCambioImgMovimiento) {
+        this.noPermitirCambioImgMovimiento = noPermitirCambioImgMovimiento;
+    }
     
     public void setNumImagen(int numImagen) {
         this.numImagen = numImagen;
@@ -161,4 +197,9 @@ public class Personaje {
         Image image = ii.getImage();
         return image;
     };
+
+    public boolean isNoPermitirCambioImgMovimiento() {
+        return noPermitirCambioImgMovimiento;
+    }
+    
 };

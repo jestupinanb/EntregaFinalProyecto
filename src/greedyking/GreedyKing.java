@@ -16,9 +16,12 @@ public class GreedyKing extends JFrame {
         initUI();
     };
     
+    private final int ancho = 18*16;
+    private final int alto = 8*16;
+    
     public void initUI(){
         add(new Board());
-        setSize(272*4+16,128*4+39);
+        setSize(ancho*4+16,alto*4+39);//Ancho y alto
         setTitle("Greedy King");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);

@@ -28,7 +28,7 @@ public class Board extends JPanel implements ActionListener {
     private int scale = 4;//El tamaño al que se aumenta el juego 1 = originial, 2 = al doble de grande, 3 = triple de grande etc...
     private int unidadMapaOriginal = 16;//El tile del mapa esta dividido en cuadros de 16x16
     private int unidadMapaGrande = 16*scale;//Tamaño que va a terner el juego al ejecutarse
-    private int delay = 8;
+    private int delay = 11;
     Personaje personaje;//Crear un personaje
     private int moverMapa = 0;//Dependiendo del numero que tenga mueve esa cantidad de columnas la matriz 
     private Timer timer;
@@ -53,11 +53,14 @@ public class Board extends JPanel implements ActionListener {
     TimerTask timeTrue;
     int contador=0;//Borrar
     //saltoPersonaje
+    boolean enSalto=false;
     boolean pressSpace=false;
     int velocidadSalto;
     int gravedad=1;
     
     boolean haySuelo;
+    
+    int lastKeyPressed;
     
     public Board() {
         this.personaje = new Personaje(scale);
@@ -68,19 +71,63 @@ public class Board extends JPanel implements ActionListener {
     }
     long loong = 100;
     
+    public void otherKeyPressed(int key){
+//        System.out.println("Laskey "+KeyEvent.getKeyText(lastKeyPressed)+" key "+KeyEvent.getKeyText(key));
+        if(lastKeyPressed!=key){
+            if (lastKeyPressed != KeyEvent.VK_SPACE && key != KeyEvent.VK_SPACE) {
+                switch (lastKeyPressed) {
+                    case KeyEvent.VK_D:
+                        pressD = false;
+                        if (!enSalto) {
+                            personaje.sinMovimiento();
+                            personaje.noPermitirCambioImgMovimiento(false);
+                        }
+                        break;
+                    case KeyEvent.VK_A:
+                        pressA = false;
+                        if (!enSalto) {
+                            personaje.sinMovimiento();
+                            personaje.noPermitirCambioImgMovimiento(false);
+                        }
+                        break;
+                    case KeyEvent.VK_W:
+                        pressW = false;
+                        break;
+                    case KeyEvent.VK_S:
+                        pressS = false;
+                        break;
+                    case KeyEvent.VK_SPACE:
+                        break;
+                }
+            }
+            if((lastKeyPressed == KeyEvent.VK_SPACE) && (key==KeyEvent.VK_D)){
+                pressA=false;
+                if(!enSalto){
+                    personaje.noPermitirCambioImgMovimiento(false);
+                }
+            }else if ((lastKeyPressed == KeyEvent.VK_SPACE) && (key==KeyEvent.VK_A)){
+                pressD=false;
+                if(!enSalto){
+                    personaje.noPermitirCambioImgMovimiento(false);
+                }
+            };
+            lastKeyPressed=key;
+        }
+    }
+    
     private class EventosTeclado extends KeyAdapter {
-        
+        boolean otherKeyPress;
         @Override
         public void keyPressed(KeyEvent e){
-            pressS = false;pressW=false;pressA=false;pressD=false;
+//            pressS = false;pressW=false;pressA=false;pressD=false;
             int key = e.getKeyCode();
-            boolean colisionoBoolean = false;
+//            System.out.println("Ultima tecla presionada "+KeyEvent.getKeyText(key));
             switch (key){
                 case KeyEvent.VK_D:
-                    pressD = true;
+                    pressD = true;//System.out.println("D");
                     break;
                 case KeyEvent.VK_A:
-                    pressA = true;
+                    pressA = true;//System.out.println("A"+" pressD "+pressD);
                     break;
                 case KeyEvent.VK_W:
                     pressW = true;
@@ -89,14 +136,18 @@ public class Board extends JPanel implements ActionListener {
                     pressS = true;
                     break;
                 case KeyEvent.VK_SPACE:
-                    System.out.println("Posicon en y"+personaje.getPositionYPaint());
-                    if(!pressSpace){
+//                    System.out.println("Posicon en y"+personaje.getPositionYPaint());
                         pressSpace=true;
-                        System.out.println("Salto");
-                        velocidadSalto = -25;
-                    }
                     break;
             };
+            if (!enSalto && pressSpace) {
+                personaje.noPermitirCambioImgMovimiento(false);
+                pressSpace = true;
+                enSalto = true;
+//                        System.out.println("Salto");
+                velocidadSalto = -25;
+            }
+            otherKeyPressed(key);
         };
         
         @Override
@@ -105,34 +156,50 @@ public class Board extends JPanel implements ActionListener {
             switch (key){
                 case KeyEvent.VK_D:
                     pressD=false;
-                    personaje.sinMovimiento();
+                    if(!enSalto){
+                        personaje.noPermitirCambioImgMovimiento(false);
+                        personaje.sinMovimiento();
+                    }
                     break;
                 case KeyEvent.VK_A:
                     pressA=false;
-                    personaje.sinMovimiento();
-//                    personaje.moveLeft();
+                    if(!enSalto){
+                        personaje.noPermitirCambioImgMovimiento(false);
+                        personaje.sinMovimiento();
+                    }
                     break;
                 case KeyEvent.VK_W:
                     pressW=false;
-//                    personaje.moveUP();
                     break;
                 case KeyEvent.VK_S:
                     pressS=false;
-//                    personaje.moveDown();
+                    break;
+                case KeyEvent.VK_SPACE:
+                    pressSpace=false;
                     break;
             }
         }
+        
+        @Override
+        public void keyTyped(KeyEvent e) {
+        }
+        
     }
     
     public void revivir(int time) {
-            timeTrue = new TimerTask() {
-                @Override
-                public void run() {
-                    tiempoDelay = true;
-                }
-            };
-            timer2.schedule(timeTrue, time);
+        timeTrue = new TimerTask() {
+            @Override
+            public void run() {
+                tiempoDelay = true;
+            }
+        };
+        timer2.schedule(timeTrue, time);
     };
+    
+    public void matarRevivir(){
+        tiempoDelay=true;
+        timeTrue.cancel();
+    }
     
     public boolean colisionoBajando(boolean colisionoBoolean){
         for (MapaColision colisiono : colisionMovY) {
@@ -148,28 +215,113 @@ public class Board extends JPanel implements ActionListener {
             return colisionoBoolean;
     };
     
+    private void ajustarImagen(){
+//        personaje.noPermitirCambioImgMovimiento(false);
+        switch (personaje.getNumImagen()) {
+            case 10:
+                personaje.setNumImagen(14);//System.out.println("Era 10 ahora soy 14");
+                personaje.sentidoDeMovimiento(false);
+                break;
+            case 11:
+                personaje.setNumImagen(15);//System.out.println("Era 10 ahora soy 15");
+                personaje.sentidoDeMovimiento(false);
+                break;
+            case 12:
+                personaje.setNumImagen(16);//System.out.println("Era 10 ahora soy 16");
+                personaje.sentidoDeMovimiento(false);
+                break;
+            case 13:
+                personaje.setNumImagen(17);//System.out.println("Era 10 ahora soy 17");
+                personaje.sentidoDeMovimiento(false);
+                break;
+            case 14:
+                personaje.setNumImagen(10);
+                personaje.sentidoDeMovimiento(true);
+                break;
+            case 15:
+                personaje.setNumImagen(11);
+                personaje.sentidoDeMovimiento(true);
+                break;
+            case 16:
+                personaje.setNumImagen(12);
+                personaje.sentidoDeMovimiento(true);
+                break;
+            case 17:
+                personaje.setNumImagen(13);
+                personaje.sentidoDeMovimiento(true);
+                break;
+        }
+    }
+    
     @Override
     public void paintComponent(Graphics g) {
+//        System.out.println("PressD "+pressD+" PressA "+pressA);
+//        System.out.println("Timepo delay = "+tiempoDelay);
 //        System.out.println("PressD="+pressD);
-//        System.out.println("pressSpace="+pressSpace);
+//        System.out.println("enSalto="+enSalto);
 //        System.out.println("ContadorDelays="+contadorDelays);
         boolean colisionoBoolean;
         super.paintComponent(g);
         g.setColor(Color.BLUE);
         mapa1(g);//Crear el mapa, se encarga de pintarlo
-        if(contadorDelaysSalto>=velocidadDelaySalto){
-            if(pressSpace){//Salto
-            colisionoBoolean=false;
-                    if (velocidadSalto < 0) {//Sube
-                        personaje.moveUP();
-                    } else {//Baja
-                        colisionoBoolean=colisionoBajando(colisionoBoolean);
-                        if (colisionoBoolean == true) {//Si toca con el suelo deja de bajar
-                            pressSpace = false;
-                        } else {
-                            personaje.moveDown();
-                        };
+        if (contadorDelaysSalto >= velocidadDelaySalto) {
+            if (enSalto) {//Salto
+                colisionoBoolean = false;
+                if((pressD && personaje.getUnidadAnchoImagenOriginal()<0) || (pressA && personaje.getUnidadAnchoImagenOriginal()>0)){
+//                    System.out.println("Entre con "+personaje.getNumImagen());
+                        ajustarImagen();
+                    }
+                if (tiempoDelay == true) {//System.out.println("No permitir cambio de img "+personaje.isNoPermitirCambioImgMovimiento());
+//                    System.out.println("NO PERMITIR CAMBIO DE MOVIMIENTO "+personaje.isNoPermitirCambioImgMovimiento());
+                    tiempoDelay = false;//System.out.println("Numero de imangen Inicio "+personaje.getNumImagen());
+                    personaje.setNumImagen(personaje.getNumImagen() + 1);
+                    personaje.sentidoDeMovimiento('j');//j=jump
+//                    System.out.println("Numero de imange "+personaje.getNumImagen());
+                    switch(personaje.getNumImagen()){
+                        case 10:
+                            revivir(100);
+                            break;
+                        case 11:
+                            revivir(200);
+                            break;
+                        case 12:
+                            revivir(200);
+                            break;
+                        case 13:
+                            revivir(10000);
+                            break;
+                        case 14:
+                            revivir(100);
+                            break;
+                        case 15:
+                            revivir(200);
+                            break;
+                        case 16:
+                            revivir(200);
+                            break;
+                        case 17:
+                            revivir(10000);
+                            break;
+                        default:
+                            personaje.setNumImagen(personaje.getNumImagen());
+                            revivir(10000);
+                            break;
+                    }
+//                    System.out.println("Num imagen"+personaje.getNumImagen());
+                };
+                if (velocidadSalto < 0) {//Sube
+                    personaje.moveUP();
+                } else {//Baja
+                    colisionoBoolean = colisionoBajando(colisionoBoolean);
+                    if (colisionoBoolean == true) {//Si toca con el suelo deja de bajar
+                        enSalto = false;
+                        personaje.sinMovimiento();
+//                        personaje.noPermitirCambioImgMovimiento(false); ¿BORRAR?
+                        matarRevivir();
+                    } else {
+                        personaje.moveDown();
                     };
+                };
                 velocidadSalto += gravedad;
             };
             contadorDelaysSalto=0;
@@ -205,9 +357,9 @@ public class Board extends JPanel implements ActionListener {
 
         if (pressA == true) {
                 colisionoBoolean = false;
-                if (tiempoDelay == true && !pressSpace) {
+                if (tiempoDelay == true && !enSalto) {
                     tiempoDelay = false;
-                    personaje.sentidoDeMovimiento(false);
+                    personaje.sentidoDeMovimiento(false,'r');//r=run
                     personaje.setNumImagen(personaje.getNumImagen() + 1);
                     if (personaje.getNumImagen() == 10) {
                         personaje.setNumImagen(6);
@@ -230,16 +382,15 @@ public class Board extends JPanel implements ActionListener {
         };
         if (pressD) {
                 colisionoBoolean = false;
-                if (tiempoDelay == true && !pressSpace) {
+                if (tiempoDelay == true && !enSalto) {
                     tiempoDelay = false;
-                    personaje.sentidoDeMovimiento(true);
+                    personaje.sentidoDeMovimiento(true,'r');//r=run
                     personaje.setNumImagen(personaje.getNumImagen() + 1);
                     if (personaje.getNumImagen() == 5) {
                         personaje.setNumImagen(1);
                     }
                     revivir(100);
                 };
-                colisionoBoolean = false;
                 for (MapaColision colisiono : colisionMovX) {
                     if (personajeColision.intersects(colisiono.getCollisionBloquexyLeft())) {;
                         colisionoBoolean = true;
@@ -256,7 +407,7 @@ public class Board extends JPanel implements ActionListener {
 //                moverPj(g,true);//BORRAR
         };
             /*Gravity*/
-        if ((pressA || pressD || !haySuelo) && !pressSpace) {
+        if ((pressA || pressD || !haySuelo) && !enSalto) {
                 colisionoBoolean = false;
                 haySuelo = colisionoBajando(colisionoBoolean);
                 if (!haySuelo) {
@@ -282,7 +433,7 @@ public class Board extends JPanel implements ActionListener {
     };
     
     public void mapa1(Graphics g){
-        System.out.println("Se pinto mapa");
+//        System.out.println("Se pinto mapa");//BORRAR
         int[] fnul = {-1,-1,0};//SinFondo
         int[] f107 = {5,6,0};//fondoVerde
         
@@ -341,24 +492,23 @@ public class Board extends JPanel implements ActionListener {
         int[] f044 = {10,2,2};int[] f045 = {11,2,0};int[] f046 = {12,2,2};
         int[] f132 = {13,7,0};
         int mapa[][][][] = {
-            //    0          1              2          3        4            5             6           7          8           9           10         11          12          13         14           15           16
-            {{f107,f061},{fnul,f062},{fnul,f062},{f107,f063},{fnul,f107},{fnul,f107},{fnul,f107},{fnul,f107},{fnul,f107},{fnul,f107},{f107,f020},{f107,f021},{f107,f022},{f107,f023},{fnul,f107},{fnul,f107},{fnul,f107},{fnul,f107}},//0
-            {{fnul,f107},{f107,f068},{f107,f069},{f107,f070},{fnul,f107},{fnul,f107},{fnul,f107},{fnul,f107},{fnul,f107},{f107,f036},{f107,f037},{f107,f038},{f107,f039},{fnul,f107},{fnul,f107},{fnul,f107},{f107,f113},{fnul,f107}},//1
-            {{fnul,f107},{fnul,f107},{f107,f086},{f107,f087},{fnul,f107},{fnul,f107},{fnul,f107},{fnul,f107},{fnul,f107},{f107,f053},{f107,f054},{f107,f055},{fnul,f107},{fnul,f107},{f107,f113},{f107,f114},{fnul,f164},{fnul,f107}},//2
-            {{fnul,f107},{fnul,f107},{f107,f113},{f107,f114},{f107,f114},{f107,f115},{fnul,f107},{fnul,f107},{fnul,f107},{f107,f041},{f107,f071},{f107,f041},{f107,f041},{f107,f113},{fnul,f164},{fnul,f131},{fnul,f131},{fnul,f107}},//3
-            {{fnul,f107},{fnul,f107},{f107,f130},{fnul,f131},{fnul,f131},{f107,f132},{fnul,f107},{fnul,f107},{f107,f041},{fnul,f107},{f107,f088},{f107,f106},{fnul,f107},{f107,f130},{fnul,f131},{fnul,f131},{f131,f027},{fnul,f107}},//4
-            {{fnul,f107},{fnul,f107},{f107,f130},{fnul,f131},{f131,f027},{fnul,f028},{fnul,f028},{fnul,f028},{f107,f029},{fnul,f107},{f107,f105},{f107,f106},{fnul,f107},{f107,f027},{fnul,f028},{fnul,f028},{fnul,f045},{fnul,f107}},//5
-            {{fnul,f008},{fnul,f008},{fnul,f009},{fnul,f028},{fnul,f045},{fnul,f045},{fnul,f045},{fnul,f045},{f127,f046},{fnul,f127},{fnul,f127},{fnul,f127},{fnul,f127},{f127,f044},{fnul,f045},{fnul,f045},{fnul,f045},{fnul,f107}},//6
-            {{fnul,f045},{fnul,f045},{fnul,f045},{fnul,f045},{fnul,f045},{fnul,f045},{fnul,f045},{fnul,f045},{f144,f046},{fnul,f144},{fnul,f144},{fnul,f144},{fnul,f144},{f144,f044},{fnul,f045},{fnul,f045},{fnul,f045},{fnul,f107}},//7
+            //    0          1              2          3        4            5             6           7          8           9           10         11          12          13         14           15           16         17          18          19
+            {{f107,f061},{fnul,f062},{fnul,f062},{f107,f063},{fnul,f107},{fnul,f107},{fnul,f107},{fnul,f107},{fnul,f107},{fnul,f107},{f107,f020},{f107,f021},{f107,f022},{f107,f023},{fnul,f107},{fnul,f107},{fnul,f107},{fnul,f107},{fnul,f107},{fnul,f107}},//0
+            {{fnul,f107},{f107,f068},{f107,f069},{f107,f070},{fnul,f107},{fnul,f107},{fnul,f107},{fnul,f107},{fnul,f107},{f107,f036},{f107,f037},{f107,f038},{f107,f039},{fnul,f107},{fnul,f107},{fnul,f107},{f107,f113},{fnul,f107},{fnul,f107},{fnul,f107}},//1
+            {{fnul,f107},{fnul,f107},{f107,f086},{f107,f087},{fnul,f107},{fnul,f107},{fnul,f107},{fnul,f107},{fnul,f107},{f107,f053},{f107,f054},{f107,f055},{fnul,f107},{fnul,f107},{f107,f113},{f107,f114},{fnul,f164},{f107,f114},{f107,f114},{f107,f114}},//2
+            {{fnul,f107},{fnul,f107},{f107,f113},{f107,f114},{f107,f114},{f107,f115},{fnul,f107},{fnul,f107},{fnul,f107},{f107,f041},{f107,f071},{f107,f041},{f107,f041},{f107,f113},{fnul,f164},{fnul,f131},{fnul,f131},{fnul,f131},{fnul,f131},{fnul,f131}},//3
+            {{fnul,f107},{fnul,f107},{f107,f130},{fnul,f131},{fnul,f131},{f107,f132},{fnul,f107},{fnul,f107},{f107,f041},{fnul,f107},{f107,f088},{f107,f106},{fnul,f107},{f107,f130},{fnul,f131},{fnul,f131},{f131,f027},{fnul,f131},{fnul,f131},{fnul,f131}},//4
+            {{fnul,f107},{fnul,f107},{f107,f130},{fnul,f131},{f131,f027},{fnul,f028},{fnul,f028},{fnul,f028},{f107,f029},{fnul,f107},{f107,f105},{f107,f106},{fnul,f107},{f107,f027},{fnul,f028},{fnul,f028},{fnul,f045},{fnul,f028},{fnul,f028},{fnul,f028}},//5
+            {{fnul,f008},{fnul,f008},{fnul,f009},{fnul,f028},{fnul,f045},{fnul,f045},{fnul,f045},{fnul,f045},{f127,f046},{fnul,f127},{fnul,f127},{fnul,f127},{fnul,f127},{f127,f044},{fnul,f045},{fnul,f045},{fnul,f045},{fnul,f045},{fnul,f045},{fnul,f045}},//6
+            {{fnul,f045},{fnul,f045},{fnul,f045},{fnul,f045},{fnul,f045},{fnul,f045},{fnul,f045},{fnul,f045},{f144,f046},{fnul,f144},{fnul,f144},{fnul,f144},{fnul,f144},{f144,f044},{fnul,f045},{fnul,f045},{fnul,f045},{fnul,f045},{fnul,f045},{fnul,f045}},//7
         };
         
         Image fondo = loadImage("Tiles.png");
-        
         for(int i=0;i<8;i++){
-            for (int j=0; j<17; j++) {//Largo
+            for (int j=1; j<18; j++) {//Largo
                 if(mapa[i][j+moverMapa][0][0]!=-1){//En caso de que haya fondo se ejecuta
-                  //Dibuja el fondo de la imagen g.drawImage(Imagen que va, posicion en pixeles de la columna donde empieza, posicion en pixeles de la fila donde empieza, posicion en pixeles de la columna donde termina, posicion en pixeles de la fila donde termina,
-                  //Esta parte se encarga de recotar la imagen original... posicion de la columna, posicion de la fila, posicion final de la columna,posicion final de la fila, this)
+                //Dibuja el fondo de la imagen g.drawImage(Imagen que va, posicion en pixeles de la columna donde empieza, posicion en pixeles de la fila donde empieza, posicion en pixeles de la columna donde termina, posicion en pixeles de la fila donde termina,
+                //Esta parte se encarga de recotar la imagen original... posicion de la columna, posicion de la fila, posicion final de la columna,posicion final de la fila, this)
                 g.drawImage(fondo,j*unidadMapaGrande,i*unidadMapaGrande,j*unidadMapaGrande+unidadMapaGrande,i*unidadMapaGrande+unidadMapaGrande,
                 mapa[i][j+moverMapa][0][0]*unidadMapaOriginal,mapa[i][j+moverMapa][0][1]*unidadMapaOriginal,mapa[i][j+moverMapa][0][0]*unidadMapaOriginal+16,mapa[i][j+moverMapa][0][1]*unidadMapaOriginal+16, this);
                 };
@@ -386,7 +536,7 @@ public class Board extends JPanel implements ActionListener {
     };
     
     public void moverPj(Graphics g,boolean pintar){
-        System.out.println("Mover pj");
+//        System.out.println("Mover pj");//BORRAR
         //Dibuja el rectangulo de la colision
         personajeColision = new 
          Rectangle(this.personaje.getPositionX()+2*scale,this.personaje.getPositionY(),this.personaje.getUnidadAnchoRun()-4*scale,this.personaje.getUnidadAltoRun()-1*scale);
