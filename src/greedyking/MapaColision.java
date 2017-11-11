@@ -50,25 +50,25 @@ public class MapaColision extends MapaPadre {
     private void makeCollisionUp(){
         this.ColisionBloqueUp = new 
         Rectangle(posicionX * unidadMapaGrande+moverMapa, posicionY * unidadMapaGrande-1*scale, unidadMapaGrande, 1 * scale);
-        g.drawRect(ColisionBloqueUp.x, ColisionBloqueUp.y, ColisionBloqueUp.width, ColisionBloqueUp.height);
+//        g.drawRect(ColisionBloqueUp.x, ColisionBloqueUp.y, ColisionBloqueUp.width, ColisionBloqueUp.height);
     };
     
     private void makeCollisionDown(){
         ColisionBloquexyDown = new 
         Rectangle(posicionX * unidadMapaGrande+moverMapa, (posicionY + 1) * unidadMapaGrande, unidadMapaGrande, 1 * scale);
-        g.drawRect(ColisionBloquexyDown.x, ColisionBloquexyDown.y, ColisionBloquexyDown.width, ColisionBloquexyDown.height);
+//        g.drawRect(ColisionBloquexyDown.x, ColisionBloquexyDown.y, ColisionBloquexyDown.width, ColisionBloquexyDown.height);
     };
     
     private void makeCollisionRight(){
         this.ColisionBloquexyRight =
         new Rectangle((posicionX + 1) * unidadMapaGrande+moverMapa, posicionY * unidadMapaGrande, 1 * scale, unidadMapaGrande);
-        g.drawRect(ColisionBloquexyRight.x, ColisionBloquexyRight.y, ColisionBloquexyRight.width, ColisionBloquexyRight.height);
+//        g.drawRect(ColisionBloquexyRight.x, ColisionBloquexyRight.y, ColisionBloquexyRight.width, ColisionBloquexyRight.height);
     };
     
     private void makeCollisionLeft(){
         ColisionBloquexyLeft = new 
         Rectangle(posicionX * unidadMapaGrande - 1 * scale+moverMapa, posicionY * unidadMapaGrande, 1 * scale, unidadMapaGrande);
-        g.drawRect(ColisionBloquexyLeft.x, ColisionBloquexyLeft.y, ColisionBloquexyLeft.width, ColisionBloquexyLeft.height);
+//        g.drawRect(ColisionBloquexyLeft.x, ColisionBloquexyLeft.y, ColisionBloquexyLeft.width, ColisionBloquexyLeft.height);
     };
     
     public Rectangle getCollisionBloqueUp(){

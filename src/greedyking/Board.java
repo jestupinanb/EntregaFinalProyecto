@@ -28,7 +28,7 @@ public class Board extends JPanel implements ActionListener {
     private int scale = 4;//El tamaño al que se aumenta el juego 1 = originial, 2 = al doble de grande, 3 = triple de grande etc...
     private int unidadMapaOriginal = 16;//El tile del mapa esta dividido en cuadros de 16x16
     private int unidadMapaGrande = 16*scale;//Tamaño que va a terner el juego al ejecutarse
-    private int delay = 11;
+    private int delay = 8;
     Personaje personaje;//Crear un personaje
     private Timer timer;
     Rectangle personajeColision;
@@ -65,7 +65,9 @@ public class Board extends JPanel implements ActionListener {
     
     //Mapa
     private int moverImgMapa = 0;//Dependiendo del numero que tenga mueve esa cantidad de columnas la matriz 
-    private int moverMapa = 0;private int cantidadMover = 0;
+    private int cuadroInicioMapa = -1;
+    private int moverMapa = cuadroInicioMapa*unidadMapaGrande;
+    int posInicioCreacionMapa = cuadroInicioMapa*unidadMapaGrande;
     
     //        System.out.println("Se pinto mapa");//BORRAR
     int[] fnul = {-1, -1, 0};//SinFondo
@@ -133,18 +135,18 @@ public class Board extends JPanel implements ActionListener {
     int[] f046 = {12, 2, 2};
     int[] f132 = {13, 7, 0};
     int[][][][] mapa = {
-        //    0          1              2          3        4            5             6           7          8           9           10         11          12          13         14           15           16         17          18          19           20          21            22            23            24              
-        {{f107, f061}, {fnul, f062}, {fnul, f062}, {f107, f063}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {f107, f020}, {f107, f021}, {f107, f022}, {f107, f023}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}},//0
-        {{fnul, f107}, {f107, f068}, {f107, f069}, {f107, f070}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {f107, f036}, {f107, f037}, {f107, f038}, {f107, f039}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {f107, f113}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}},//1
-        {{fnul, f107}, {fnul, f107}, {f107, f086}, {f107, f087}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f131}, {f107, f053}, {f107, f054}, {f107, f055}, {fnul, f107}, {fnul, f107}, {f107, f113}, {f107, f114}, {fnul, f164}, {f107, f114}, {f107, f114}, {f107, f114}, {f107, f114}, {f107, f114}},//2
-        {{fnul, f107}, {fnul, f107}, {f107, f113}, {f107, f114}, {f107, f114}, {f107, f115}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {f107, f041}, {f107, f071}, {f107, f041}, {f107, f041}, {f107, f113}, {fnul, f164}, {fnul, f131}, {fnul, f131}, {fnul, f131}, {fnul, f131}, {fnul, f131}, {fnul, f131}, {fnul, f131}},//3
-        {{fnul, f107}, {fnul, f107}, {f107, f130}, {fnul, f131}, {fnul, f131}, {f107, f132}, {fnul, f107}, {fnul, f107}, {f107, f041}, {fnul, f107}, {f107, f088}, {f107, f106}, {fnul, f107}, {f107, f130}, {fnul, f131}, {fnul, f131}, {f131, f027}, {fnul, f131}, {fnul, f131}, {fnul, f131}, {fnul, f131}, {fnul, f131}},//4
-        {{fnul, f107}, {fnul, f107}, {f107, f130}, {fnul, f131}, {f131, f027}, {fnul, f028}, {fnul, f028}, {fnul, f028}, {f107, f029}, {fnul, f107}, {f107, f105}, {f107, f106}, {fnul, f107}, {f107, f027}, {fnul, f028}, {fnul, f028}, {fnul, f045}, {fnul, f028}, {fnul, f028}, {fnul, f028}, {fnul, f028}, {fnul, f028}},//5
-        {{fnul, f008}, {fnul, f008}, {fnul, f009}, {fnul, f028}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {f127, f046}, {fnul, f127}, {fnul, f127}, {fnul, f127}, {fnul, f127}, {f127, f044}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}},//6
-        {{fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {f144, f046}, {fnul, f144}, {fnul, f144}, {fnul, f144}, {fnul, f144}, {f144, f044}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}},//7
+        //    0          1              2               3             4           5             6             7             8             9             10           11             12            13            14            15           16             17            18            19            20            21            22            23            24            25            26            27             28            29
+        {{fnul,f107},{f107, f061}, {fnul, f062}, {fnul, f062}, {f107, f063}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {f107, f020}, {f107, f021}, {f107, f022}, {f107, f023}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}},//0
+        {{fnul,f107},{fnul, f107}, {f107, f068}, {f107, f069}, {f107, f070}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {f107, f036}, {f107, f037}, {f107, f038}, {f107, f039}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {f107, f113}, {f107, f114}, {f107, f114}, {f107, f114}, {f107, f114}, {f107, f114}, {f107, f114}, {f107, f114}, {f107, f114}, {f107, f115}, {fnul, f107}},//1
+        {{fnul,f107},{fnul, f107}, {fnul, f107}, {f107, f086}, {f107, f087}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {f107, f053}, {f107, f054}, {f107, f055}, {fnul, f107}, {fnul, f107}, {f107, f113}, {f107, f114}, {fnul, f164}, {fnul, f131}, {fnul, f131}, {fnul, f131}, {fnul, f131}, {fnul, f131}, {fnul, f131}, {fnul, f131}, {fnul, f131}, {fnul, f131}, {f107, f114}},//2
+        {{fnul,f107},{fnul, f107}, {fnul, f107}, {f107, f113}, {f107, f114}, {f107, f114}, {f107, f115}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {f107, f041}, {f107, f071}, {f107, f041}, {f107, f041}, {f107, f113}, {fnul, f164}, {fnul, f131}, {fnul, f131}, {fnul, f131}, {fnul, f131}, {fnul, f131}, {fnul, f131}, {fnul, f131}, {fnul, f131}, {fnul, f131}, {fnul, f131}, {fnul, f131}, {fnul, f131}},//3
+        {{fnul,f107},{fnul, f107}, {fnul, f107}, {f107, f130}, {fnul, f131}, {fnul, f131}, {f107, f132}, {fnul, f107}, {fnul, f107}, {f107, f041}, {fnul, f107}, {f107, f088}, {f107, f106}, {fnul, f107}, {f107, f130}, {fnul, f131}, {fnul, f131}, {f131, f027}, {fnul, f028}, {fnul, f028}, {fnul, f028}, {fnul, f028}, {fnul, f028}, {fnul, f028}, {fnul, f028}, {fnul, f028}, {f131, f029}, {fnul, f131}},//4
+        {{fnul,f107},{fnul, f107}, {fnul, f107}, {f107, f130}, {fnul, f131}, {f131, f027}, {fnul, f028}, {fnul, f028}, {fnul, f028}, {f107, f029}, {fnul, f107}, {f107, f105}, {f107, f106}, {fnul, f107}, {f107, f027}, {fnul, f028}, {fnul, f028}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f028}},//5
+        {{fnul,f107},{fnul, f008}, {fnul, f008}, {fnul, f009}, {fnul, f028}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {f127, f046}, {fnul, f127}, {fnul, f127}, {fnul, f127}, {fnul, f127}, {f127, f044}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}},//6
+        {{fnul,f107},{fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {f144, f046}, {fnul, f144}, {fnul, f144}, {fnul, f144}, {fnul, f144}, {f144, f044}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}},//7
     };
     
-    private int cuadroInicioMovMapa = 8;
+    private int cuadroInicioMovMapaPersonaje = 8;
     
     public Board() {
         this.personaje = new Personaje(scale);
@@ -287,12 +289,12 @@ public class Board extends JPanel implements ActionListener {
                     pressSpace=false;
                     break;
                 case KeyEvent.VK_RIGHT:
-                    System.out.println("MOVE RIGHT");
+                    System.out.println("MOVE RIGHT MoverImgMapa++");
                     moverImgMapa++;
                     break;
                 case KeyEvent.VK_LEFT:
                     if(moverImgMapa>0){
-                    System.out.println("MOVE LEFT");
+                    System.out.println("MOVE LEFT MoverImgMapa--");
                     moverImgMapa--;}else{System.out.println("Distancia minima");}
                     break;
                 case KeyEvent.VK_E:
@@ -375,6 +377,51 @@ public class Board extends JPanel implements ActionListener {
                 personaje.sentidoDeMovimiento(true);
                 break;
         }
+    }
+    public boolean colisionoIzquierda(boolean colisionoBoolean){
+        if (tiempoDelay == true && !enSalto) {//ESTE IF NO PERTENECE A ESTA FUNCION
+                    tiempoDelay = false;
+                    personaje.sentidoDeMovimiento(false,'r');//r=run
+                    personaje.setNumImagen(personaje.getNumImagen() + 1);
+                    if (personaje.getNumImagen() == 10) {
+                        personaje.setNumImagen(6);
+                    }
+                    revivir(100);
+                };
+                for (MapaColision colisiono : colisionMovX) {
+                    if (personajeColision.intersects(colisiono.getCollisionBloquexyRight())) {;
+                        colisionoBoolean = true;
+                    }
+                };
+                for (MapaColision colisiono : colisionMovXY) {
+                    if (personajeColision.intersects(colisiono.getCollisionBloquexyRight())) {
+                        colisionoBoolean = true;
+                    };
+                };
+                return colisionoBoolean;
+    }
+    
+    public boolean colisionoDerecha(boolean colisionoBoolean){
+        if (tiempoDelay == true && !enSalto) {//ESTE IF NO PERTENECE A ESTA FUNCION
+                    tiempoDelay = false;
+                    personaje.sentidoDeMovimiento(true,'r');//r=run
+                    personaje.setNumImagen(personaje.getNumImagen() + 1);
+                    if (personaje.getNumImagen() == 5) {
+                        personaje.setNumImagen(1);
+                    }
+                    revivir(100);
+                };
+                for (MapaColision colisiono : colisionMovX) {
+                    if (personajeColision.intersects(colisiono.getCollisionBloquexyLeft())) {;
+                        colisionoBoolean = true;
+                    }
+                };
+                for (MapaColision colisiono : colisionMovXY) {
+                    if (personajeColision.intersects(colisiono.getCollisionBloquexyLeft())) {
+                        colisionoBoolean = true;
+                    };
+                };
+                return colisionoBoolean;
     }
     
     @Override
@@ -478,79 +525,33 @@ public class Board extends JPanel implements ActionListener {
                 personaje.moveUP();
             };
         };
-
+        
         if (pressA == true) {
                 colisionoBoolean = false;
-                if (tiempoDelay == true && !enSalto) {
-                    tiempoDelay = false;
-                    personaje.sentidoDeMovimiento(false,'r');//r=run
-                    personaje.setNumImagen(personaje.getNumImagen() + 1);
-                    if (personaje.getNumImagen() == 10) {
-                        personaje.setNumImagen(6);
-                    }
-                    revivir(100);
-                };
-                for (MapaColision colisiono : colisionMovX) {
-                    if (personajeColision.intersects(colisiono.getCollisionBloquexyRight())) {;
-                        colisionoBoolean = true;
-                    }
-                };
-                for (MapaColision colisiono : colisionMovXY) {
-                    if (personajeColision.intersects(colisiono.getCollisionBloquexyRight())) {
-                        colisionoBoolean = true;
-                    };
-                };
+                colisionoBoolean = colisionoIzquierda(colisionoBoolean);
                 if (!colisionoBoolean) {
-                    moverMapa += scale;
-                    if(!(moverImgMapa==0 && moverMapa%unidadMapaGrande == 0) && (personaje.getPositionX()<=cuadroInicioMovMapa*unidadMapaGrande)){
-                        if (moverMapa % unidadMapaGrande == 0) {
-                            System.out.println("Modulo de " + moverMapa + "%" + unidadMapaGrande + "=0");
-                            System.out.println("Mover Img" + moverImgMapa);
-                            moverImgMapa--;
-                            moverMapa = -1 * unidadMapaGrande;//0;
-                        }
-                    }else{
-                        moverMapa -= scale;
-                        personaje.moveLeft();
-                    };
+                        if(moverMapa%unidadMapaGrande!=0 || moverImgMapa !=0 && (personaje.getPositionX()<=cuadroInicioMovMapaPersonaje*unidadMapaGrande)){
+                            moverMapa += scale;
+                            if(moverMapa==posInicioCreacionMapa+unidadMapaGrande){//if(moverMapa==posInicioCreacionMapa+1*unidadMapaGrande){
+                                moverImgMapa--;
+                                moverMapa= posInicioCreacionMapa;
+                            }
+                        }else{personaje.moveLeft();}
                 };
         };
         if (pressD) {
                 colisionoBoolean = false;
-                if (tiempoDelay == true && !enSalto) {
-                    tiempoDelay = false;
-                    personaje.sentidoDeMovimiento(true,'r');//r=run
-                    personaje.setNumImagen(personaje.getNumImagen() + 1);
-                    if (personaje.getNumImagen() == 5) {
-                        personaje.setNumImagen(1);
-                    }
-                    revivir(100);
-                };
-                for (MapaColision colisiono : colisionMovX) {
-                    if (personajeColision.intersects(colisiono.getCollisionBloquexyLeft())) {;
-                        colisionoBoolean = true;
-                    }
-                };
-                for (MapaColision colisiono : colisionMovXY) {
-                    if (personajeColision.intersects(colisiono.getCollisionBloquexyLeft())) {
-                        colisionoBoolean = true;
-                    };
-                };
-                if (!colisionoBoolean) {//SE PUEDE MEJORAR
-                    moverMapa -= scale;
-                    System.out.println("Personaje posicion" + personaje.getPositionX() + "=" + 7 * unidadMapaGrande);
+                colisionoBoolean = colisionoDerecha(colisionoBoolean);
+                if (!colisionoBoolean) {
+//                    System.out.println("Personaje posicion" + personaje.getPositionX() + "=" + 7 * unidadMapaGrande);
 //                    System.out.println("Mover mapa "+moverMapa);
-                    if (!(moverImgMapa == 4 && moverMapa % unidadMapaGrande == 0) && (personaje.getPositionX() >= cuadroInicioMovMapa * unidadMapaGrande)) {
-                        if (moverMapa % unidadMapaGrande == 0) {
-                            System.out.println("Modulo de " + moverMapa + "%" + unidadMapaGrande + "=0");
-                            System.out.println("Mover img" + moverImgMapa);
+                    if(moverMapa%unidadMapaGrande!=0 || moverImgMapa!=9 && (personaje.getPositionX() >= cuadroInicioMovMapaPersonaje * unidadMapaGrande)){
+                        moverMapa-=scale;
+                        if(moverMapa==posInicioCreacionMapa-unidadMapaGrande){//if(moverMapa==posInicioCreacionMapa-1*unidadMapaGrande){
                             moverImgMapa++;
-                            moverMapa = 0;//1*unidadMapaGrande;
+                            moverMapa=posInicioCreacionMapa;//posInicioCreacionMapa
                         }
-                    } else {
-                        moverMapa += scale;
-                        personaje.moveRight();
-                    };
+                    }else{personaje.moveRight();}
                 };
 //                moverPj(g,true);//BORRAR
         };
@@ -586,7 +587,7 @@ public class Board extends JPanel implements ActionListener {
         colisionMovXY.clear();
         Image fondo = loadImage("Tiles.png");
         for(int posY=0;posY<8;posY++){
-            for (int posX=0; posX<18; posX++) {//Largo
+            for (int posX=0; posX<19; posX++) {//Largo
                 if(mapa[posY][posX+moverImgMapa][0][0]!=-1){//En caso de que haya fondo se ejecuta
                 //Dibuja el fondo de la imagen g.drawImage(Imagen que va, posicion en pixeles de la columna donde empieza, posicion en pixeles de la fila donde empieza, posicion en pixeles de la columna donde termina, posicion en pixeles de la fila donde termina,
                 //Esta parte se encarga de recotar la imagen original... posicion de la columna, posicion de la fila, posicion final de la columna,posicion final de la fila, this)
@@ -601,6 +602,9 @@ public class Board extends JPanel implements ActionListener {
                 agregarColision(mapa[posY][posX+moverImgMapa][1][2],posX,posY,this.scale,g,moverMapa);
             };
         };
+        //Barras de mov del mapa
+        g.drawRect(posInicioCreacionMapa, 0, unidadMapaGrande, 8*unidadMapaGrande);//Barra inicial
+        g.drawRect(18*unidadMapaGrande+posInicioCreacionMapa, 0, unidadMapaGrande, 8*unidadMapaGrande);//Barra finañ
     }
     
     public void agregarColision(int agregarColision, int x, int y, int scale, Graphics g,int moverMapa) {
