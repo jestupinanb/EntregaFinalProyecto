@@ -16,7 +16,7 @@ public class GreedyKing extends JFrame {
         initUI();
     };
     
-    private final int ancho = 18*16;
+    private final int ancho = 17*16;
     private final int alto = 8*16;
     
     public void initUI(){
