@@ -15,10 +15,10 @@ import java.awt.Rectangle;
  */
 public class MapaColision extends MapaPadre {
     protected Graphics g;
-    protected Rectangle ColisionBloqueUp;
-    protected Rectangle ColisionBloquexyDown;
-    protected Rectangle ColisionBloquexyRight;
-    protected Rectangle ColisionBloquexyLeft;
+    protected Rectangle colisionBloqueUp;
+    protected Rectangle colisionBloquexyDown;
+    protected Rectangle colisionBloquexyRight;
+    protected Rectangle colisionBloquexyLeft;
     protected int moverMapa;
 
     public MapaColision(int posicionX, int posicionY,int scale,Graphics g,String bloquea,int moverMapa){
@@ -48,42 +48,42 @@ public class MapaColision extends MapaPadre {
     };
     
     private void makeCollisionUp(){
-        this.ColisionBloqueUp = new 
+        this.colisionBloqueUp = new 
         Rectangle(posicionX * unidadMapaGrande+moverMapa, posicionY * unidadMapaGrande-1*scale, unidadMapaGrande, 1 * scale);
 //        g.drawRect(ColisionBloqueUp.x, ColisionBloqueUp.y, ColisionBloqueUp.width, ColisionBloqueUp.height);
     };
     
     private void makeCollisionDown(){
-        ColisionBloquexyDown = new 
+        colisionBloquexyDown = new 
         Rectangle(posicionX * unidadMapaGrande+moverMapa, (posicionY + 1) * unidadMapaGrande, unidadMapaGrande, 1 * scale);
 //        g.drawRect(ColisionBloquexyDown.x, ColisionBloquexyDown.y, ColisionBloquexyDown.width, ColisionBloquexyDown.height);
     };
     
     private void makeCollisionRight(){
-        this.ColisionBloquexyRight =
+        this.colisionBloquexyRight =
         new Rectangle((posicionX + 1) * unidadMapaGrande+moverMapa, posicionY * unidadMapaGrande, 1 * scale, unidadMapaGrande);
 //        g.drawRect(ColisionBloquexyRight.x, ColisionBloquexyRight.y, ColisionBloquexyRight.width, ColisionBloquexyRight.height);
     };
     
     private void makeCollisionLeft(){
-        ColisionBloquexyLeft = new 
+        colisionBloquexyLeft = new 
         Rectangle(posicionX * unidadMapaGrande - 1 * scale+moverMapa, posicionY * unidadMapaGrande, 1 * scale, unidadMapaGrande);
 //        g.drawRect(ColisionBloquexyLeft.x, ColisionBloquexyLeft.y, ColisionBloquexyLeft.width, ColisionBloquexyLeft.height);
     };
     
     public Rectangle getCollisionBloqueUp(){
-        return ColisionBloqueUp;
+        return colisionBloqueUp;
     };
 
     public Rectangle getCollisionBloquexyDown() {
-        return ColisionBloquexyDown;
+        return colisionBloquexyDown;
     }
 
     public Rectangle getCollisionBloquexyLeft() {
-        return ColisionBloquexyLeft;
+        return colisionBloquexyLeft;
     }
 
     public Rectangle getCollisionBloquexyRight() {
-        return ColisionBloquexyRight;
+        return colisionBloquexyRight;
     }
 }

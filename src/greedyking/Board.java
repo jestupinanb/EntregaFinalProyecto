@@ -38,6 +38,7 @@ public class Board extends JPanel implements ActionListener {
     ArrayList<MapaColision> colisionMovY = new ArrayList();
     ArrayList<MapaColision> colisionMovX = new ArrayList();
     ArrayList<MapaColision> colisionMovXY = new ArrayList();
+    ColisionBloqueLargo colisionBloqueLargo;//Colision cuando cae el personaje
     
     boolean pressS;boolean pressA;boolean pressW;boolean pressD;//Movimiento con las colisiones
     boolean pressDMov2=false;//USAR
@@ -68,6 +69,9 @@ public class Board extends JPanel implements ActionListener {
     private int cuadroInicioMapa = -1;
     private int moverMapa = cuadroInicioMapa*unidadMapaGrande;
     int posInicioCreacionMapa = cuadroInicioMapa*unidadMapaGrande;
+    
+    //Vidas
+    int vidas;
     
     //        System.out.println("Se pinto mapa");//BORRAR
     int[] fnul = {-1, -1, 0};//SinFondo
@@ -154,6 +158,7 @@ public class Board extends JPanel implements ActionListener {
         setFocusable(true);
         addKeyListener(new EventosTeclado());
         timer.start();
+        this.vidas = 1;
     }
     
     public void otherKeyPressed(int key){
@@ -378,6 +383,7 @@ public class Board extends JPanel implements ActionListener {
                 break;
         }
     }
+    
     public boolean colisionoIzquierda(boolean colisionoBoolean){
         if (tiempoDelay == true && !enSalto) {//ESTE IF NO PERTENECE A ESTA FUNCION
                     tiempoDelay = false;
@@ -530,7 +536,7 @@ public class Board extends JPanel implements ActionListener {
                 colisionoBoolean = false;
                 colisionoBoolean = colisionoIzquierda(colisionoBoolean);
                 if (!colisionoBoolean) {
-                        if(moverMapa%unidadMapaGrande!=0 || moverImgMapa !=0 && (personaje.getPositionX()<=cuadroInicioMovMapaPersonaje*unidadMapaGrande)){
+                        if((moverMapa%unidadMapaGrande!=0 || moverImgMapa !=0) && (personaje.getPositionX()<=cuadroInicioMovMapaPersonaje*unidadMapaGrande)){
                             moverMapa += scale;
                             if(moverMapa==posInicioCreacionMapa+unidadMapaGrande){//if(moverMapa==posInicioCreacionMapa+1*unidadMapaGrande){
                                 moverImgMapa--;
@@ -545,7 +551,8 @@ public class Board extends JPanel implements ActionListener {
                 if (!colisionoBoolean) {
 //                    System.out.println("Personaje posicion" + personaje.getPositionX() + "=" + 7 * unidadMapaGrande);
 //                    System.out.println("Mover mapa "+moverMapa);
-                    if(moverMapa%unidadMapaGrande!=0 || moverImgMapa!=9 && (personaje.getPositionX() >= cuadroInicioMovMapaPersonaje * unidadMapaGrande)){
+//                    System.out.println("posicion x"+personaje.getPositionX()+">="+cuadroInicioMovMapaPersonaje * unidadMapaGrande);
+                    if((moverMapa%unidadMapaGrande!=0 || moverImgMapa!=9) && (personaje.getPositionX() >= cuadroInicioMovMapaPersonaje * unidadMapaGrande)){
                         moverMapa-=scale;
                         if(moverMapa==posInicioCreacionMapa-unidadMapaGrande){//if(moverMapa==posInicioCreacionMapa-1*unidadMapaGrande){
                             moverImgMapa++;
@@ -567,8 +574,8 @@ public class Board extends JPanel implements ActionListener {
             contadorDelays = 0;
         } else {contadorDelays++;};
         moverPj(g, true);
+        colisionConBloqueCaida();
     }
-    
     
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -580,6 +587,22 @@ public class Board extends JPanel implements ActionListener {
         Image image = ii.getImage();
         return image;
     };
+    
+    public void colisionConBloqueCaida(){
+        if(personajeColision.intersects(this.colisionBloqueLargo.getColisionBloque())){
+            personaje.setPosicionX(0);
+            personaje.setPosicionY(0);
+            vidas--;
+            System.out.println("Vidas: "+vidas);
+            terminoJuego();
+        }
+    }
+    
+    public void terminoJuego(){
+        if(vidas==0){
+            System.out.println("Game Over");
+        }
+    }
     
     public void mapa1(Graphics g){
         colisionMovX.clear();
@@ -602,6 +625,7 @@ public class Board extends JPanel implements ActionListener {
                 agregarColision(mapa[posY][posX+moverImgMapa][1][2],posX,posY,this.scale,g,moverMapa);
             };
         };
+        this.colisionBloqueLargo = new ColisionBloqueLargo(0,8,this.scale,g,18,1);
         //Barras de mov del mapa
         g.drawRect(posInicioCreacionMapa, 0, unidadMapaGrande, 8*unidadMapaGrande);//Barra inicial
         g.drawRect(18*unidadMapaGrande+posInicioCreacionMapa, 0, unidadMapaGrande, 8*unidadMapaGrande);//Barra finañ
