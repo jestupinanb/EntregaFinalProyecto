@@ -35,10 +35,12 @@ public class Board extends JPanel implements ActionListener {
     
     Rectangle personajeColisionPies;
     
-    ArrayList<MapaColision> colisionMovY = new ArrayList();
-    ArrayList<MapaColision> colisionMovX = new ArrayList();
-    ArrayList<MapaColision> colisionMovXY = new ArrayList();
-    ColisionBloqueLargo colisionBloqueLargo;//Colision cuando cae el personaje
+    private ArrayList<MapaColision> colisionMovY = new ArrayList();
+    private ArrayList<MapaColision> colisionMovX = new ArrayList();
+    private ArrayList<MapaColision> colisionMovXY = new ArrayList();
+    private ColisionBloqueLargo colisionBloqueLargoCaida;//Colision cuando cae el personaje
+    private ColisionBloqueLargo colisionBloqueLargoDerecha;
+    private ColisionBloqueLargo colisionBloqueLargoIzquierda;
     
     boolean pressS;boolean pressA;boolean pressW;boolean pressD;//Movimiento con las colisiones
     boolean pressDMov2=false;//USAR
@@ -404,6 +406,9 @@ public class Board extends JPanel implements ActionListener {
                         colisionoBoolean = true;
                     };
                 };
+                if(personajeColision.intersects(this.colisionBloqueLargoIzquierda.getColisionBloque())){
+                    System.out.println("Colisionoo");
+                }
                 return colisionoBoolean;
     }
     
@@ -427,6 +432,9 @@ public class Board extends JPanel implements ActionListener {
                         colisionoBoolean = true;
                     };
                 };
+                if(personajeColision.intersects(this.colisionBloqueLargoDerecha.getColisionBloque())){
+                    colisionoBoolean=true;
+                }
                 return colisionoBoolean;
     }
     
@@ -589,7 +597,7 @@ public class Board extends JPanel implements ActionListener {
     };
     
     public void colisionConBloqueCaida(){
-        if(personajeColision.intersects(this.colisionBloqueLargo.getColisionBloque())){
+        if(personajeColision.intersects(this.colisionBloqueLargoCaida.getColisionBloque())){
             personaje.setPosicionX(0);
             personaje.setPosicionY(0);
             vidas--;
@@ -625,10 +633,15 @@ public class Board extends JPanel implements ActionListener {
                 agregarColision(mapa[posY][posX+moverImgMapa][1][2],posX,posY,this.scale,g,moverMapa);
             };
         };
-        this.colisionBloqueLargo = new ColisionBloqueLargo(0,8,this.scale,g,18,1);
+        //bloque de caida
+        this.colisionBloqueLargoCaida = new ColisionBloqueLargo(0,8,this.scale,g,18,1);
+        //bloque de la derecha
+        this.colisionBloqueLargoDerecha = new ColisionBloqueLargo(18+cuadroInicioMapa,0,this.scale,g,2,8);
+        //bloque de la izquierda
+        this.colisionBloqueLargoIzquierda = new ColisionBloqueLargo(cuadroInicioMapa,0,this.scale,g,1,8);
         //Barras de mov del mapa
         g.drawRect(posInicioCreacionMapa, 0, unidadMapaGrande, 8*unidadMapaGrande);//Barra inicial
-        g.drawRect(18*unidadMapaGrande+posInicioCreacionMapa, 0, unidadMapaGrande, 8*unidadMapaGrande);//Barra finañ
+//        g.drawRect(18*unidadMapaGrande+posInicioCreacionMapa, 0, unidadMapaGrande, 8*unidadMapaGrande);//Barra finañ
     }
     
     public void agregarColision(int agregarColision, int x, int y, int scale, Graphics g,int moverMapa) {
