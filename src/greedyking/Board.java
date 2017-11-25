@@ -16,6 +16,7 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.TimerTask;
+import javax.sound.sampled.FloatControl;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -42,7 +43,9 @@ public class Board extends JPanel implements ActionListener {
     private ColisionBloqueLargo colisionBloqueLargoDerecha;
     private ColisionBloqueLargo colisionBloqueLargoIzquierda;
     
-    boolean pressS;boolean pressA;boolean pressW;boolean pressD;//Movimiento con las colisiones
+    boolean pressS;boolean pressA;boolean pressW;boolean pressD;//La tecla esta siendo precionada
+    boolean firstTimeD;//Primera vez que se preciona la tecla 
+    boolean firstTimeEnSalto;//Primera vez que se preciona espacio
     boolean pressDMov2=false;//USAR
     
     //Repaint relacionado con delay
@@ -71,9 +74,6 @@ public class Board extends JPanel implements ActionListener {
     private int cuadroInicioMapa = -1;
     private int moverMapa = cuadroInicioMapa*unidadMapaGrande;
     int posInicioCreacionMapa = cuadroInicioMapa*unidadMapaGrande;
-    
-    //Vidas
-    int vidas;
     
     //        System.out.println("Se pinto mapa");//BORRAR
     int[] fnul = {-1, -1, 0};//SinFondo
@@ -151,6 +151,8 @@ public class Board extends JPanel implements ActionListener {
         {{fnul,f107},{fnul, f008}, {fnul, f008}, {fnul, f009}, {fnul, f028}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {f127, f046}, {fnul, f127}, {fnul, f127}, {fnul, f127}, {fnul, f127}, {f127, f044}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}},//6
         {{fnul,f107},{fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {f144, f046}, {fnul, f144}, {fnul, f144}, {fnul, f144}, {fnul, f144}, {f144, f044}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}},//7
     };
+    //sonido
+    Sonidos sonidos = new Sonidos();
     
     private int cuadroInicioMovMapaPersonaje = 8;
     
@@ -160,7 +162,13 @@ public class Board extends JPanel implements ActionListener {
         setFocusable(true);
         addKeyListener(new EventosTeclado());
         timer.start();
-        this.vidas = 1;
+        sonidos.musicaFondo.asignarDireccion("Troll Song 10 The Happy Troll",true);
+        sonidos.musicaFondo.reproducir();
+        sonidos.caminar.asignarDireccion("slime5",true);
+        sonidos.salto.asignarDireccion("sfx_movement_jump20", false);
+        sonidos.caida.asignarDireccion("sfx_sounds_falling12", false);
+        sonidos.perdidaDeVida.asignarDireccion("sfx_deathscream_human1", false);
+        this.firstTimeD = true;
     }
     
     public void otherKeyPressed(int key){
@@ -216,6 +224,7 @@ public class Board extends JPanel implements ActionListener {
 //            System.out.println("Ultima tecla presionada "+KeyEvent.getKeyText(key));
             switch (key){
                 case KeyEvent.VK_D:
+//                    if(firstTimeD){firstTimeD = true;};
                     pressD = true;//System.out.println("D");
                     break;
                 case KeyEvent.VK_A:
@@ -228,37 +237,15 @@ public class Board extends JPanel implements ActionListener {
                     pressS = true;
                     break;
                 case KeyEvent.VK_SPACE:
-//                    System.out.println("Posicon en y"+personaje.getPositionYPaint());
-                        pressSpace=true;
+                    pressSpace=true;
                     break;
                 case KeyEvent.VK_E:
-                    System.out.println("Tamaño del mapa "+mapa.length);
-                    moverMapa -= scale;
-//                    System.out.println("Mover mapa "+moverMapa);
-                    if (!(moverImgMapa == 4 && moverMapa % unidadMapaGrande == 0)) {
-                        if (moverMapa % unidadMapaGrande == 0) {
-                            System.out.println("Modulo de " + moverMapa + "%" + unidadMapaGrande + "=0");
-                            System.out.println("Mover img" + moverImgMapa);
-                            moverImgMapa++;
-                            moverMapa = 0;//1*unidadMapaGrande;
-                        }
-                    }else{moverMapa += scale;};
                     break;
                 case KeyEvent.VK_Q:
-                    System.out.println("Modulo"+(moverMapa%unidadMapaGrande));
-//                    System.out.println("Mover img  Mapa "+moverImgMapa);
-                    moverMapa += scale;
-                    if(!(moverImgMapa==0 && moverMapa%unidadMapaGrande == 0)){
-                        if (moverMapa % unidadMapaGrande == 0) {
-                            System.out.println("Modulo de " + moverMapa + "%" + unidadMapaGrande + "=0");
-                            System.out.println("Mover Img" + moverImgMapa);
-                            moverImgMapa--;
-                            moverMapa = -1 * unidadMapaGrande;//0;
-                        }
-                    }else{moverMapa -= scale;};
                     break;
             };
             if (!enSalto && pressSpace) {
+//                if(firstTimeEnSalto){firstTimeEnSalto = true;}
                 personaje.noPermitirCambioImgMovimiento(false);
                 pressSpace = true;
                 enSalto = true;
@@ -274,10 +261,12 @@ public class Board extends JPanel implements ActionListener {
             switch (key){
                 case KeyEvent.VK_D:
                     pressD=false;
+                    firstTimeD = true;
                     if(!enSalto){
                         personaje.noPermitirCambioImgMovimiento(false);
                         personaje.sinMovimiento();
                     }
+                    sonidos.detenerCaminar();
                     break;
                 case KeyEvent.VK_A:
                     pressA=false;
@@ -285,6 +274,7 @@ public class Board extends JPanel implements ActionListener {
                         personaje.noPermitirCambioImgMovimiento(false);
                         personaje.sinMovimiento();
                     }
+                    sonidos.detenerCaminar();
                     break;
                 case KeyEvent.VK_W:
                     pressW=false;
@@ -305,10 +295,11 @@ public class Board extends JPanel implements ActionListener {
                     moverImgMapa--;}else{System.out.println("Distancia minima");}
                     break;
                 case KeyEvent.VK_E:
-//                    moverMapa -= scale;
+                    sonidos.musicaFondo.stop();
+//                    sonidos.musicaFondo.reproducir();
                     break;
                 case KeyEvent.VK_Q:
-//                    moverMapa += scale;
+                    perdidaDeVida();
                     break;
             }
         }
@@ -407,8 +398,8 @@ public class Board extends JPanel implements ActionListener {
                     };
                 };
                 if(personajeColision.intersects(this.colisionBloqueLargoIzquierda.getColisionBloque())){
-                    System.out.println("Colisionoo");
-                }
+                    colisionoBoolean = true;
+                };
                 return colisionoBoolean;
     }
     
@@ -451,6 +442,8 @@ public class Board extends JPanel implements ActionListener {
         mapa1(g);//Crear el mapa, se encarga de pintarlo
         if (contadorDelaysSalto >= velocidadDelaySalto) {
             if (enSalto) {//Salto
+//                if(firstTimeEnSalto){firstTimeEnSalto=false;}
+                if(!sonidos.salto.reproducido){sonidos.reproducirSalto();}
                 colisionoBoolean = false;
                 if((pressD && personaje.getUnidadAnchoImagenOriginal()<0) || (pressA && personaje.getUnidadAnchoImagenOriginal()>0)){
 //                    System.out.println("Entre con "+personaje.getNumImagen());
@@ -501,6 +494,7 @@ public class Board extends JPanel implements ActionListener {
                     if (colisionoBoolean == true) {//Si toca con el suelo deja de bajar
                         enSalto = false;
                         personaje.sinMovimiento();
+                        sonidos.detenerSalto();
 //                        personaje.noPermitirCambioImgMovimiento(false); ¿BORRAR?
                         matarRevivir();
                     } else {
@@ -542,6 +536,7 @@ public class Board extends JPanel implements ActionListener {
         
         if (pressA == true) {
                 colisionoBoolean = false;
+                reproducirSonidoSalto();
                 colisionoBoolean = colisionoIzquierda(colisionoBoolean);
                 if (!colisionoBoolean) {
                         if((moverMapa%unidadMapaGrande!=0 || moverImgMapa !=0) && (personaje.getPositionX()<=cuadroInicioMovMapaPersonaje*unidadMapaGrande)){
@@ -553,7 +548,10 @@ public class Board extends JPanel implements ActionListener {
                         }else{personaje.moveLeft();}
                 };
         };
+        
         if (pressD) {
+//            if(firstTimeD){sonidos.reproducirCaminar();firstTimeD=false;}
+                reproducirSonidoSalto();
                 colisionoBoolean = false;
                 colisionoBoolean = colisionoDerecha(colisionoBoolean);
                 if (!colisionoBoolean) {
@@ -570,6 +568,7 @@ public class Board extends JPanel implements ActionListener {
                 };
 //                moverPj(g,true);//BORRAR
         };
+        
             /*Gravity*/
         if ((pressA || pressD || !haySuelo) && !enSalto) {
                 colisionoBoolean = false;
@@ -583,6 +582,13 @@ public class Board extends JPanel implements ActionListener {
         } else {contadorDelays++;};
         moverPj(g, true);
         colisionConBloqueCaida();
+        
+        drawVida(g);
+        
+    }
+    
+    public void reproducirSonidoSalto(){
+        if(!sonidos.caminar.reproducido && !enSalto){sonidos.reproducirCaminar();}
     }
     
     @Override
@@ -600,16 +606,37 @@ public class Board extends JPanel implements ActionListener {
         if(personajeColision.intersects(this.colisionBloqueLargoCaida.getColisionBloque())){
             personaje.setPosicionX(0);
             personaje.setPosicionY(0);
-            vidas--;
-            System.out.println("Vidas: "+vidas);
+            perdidaDeVida();
+            this.sonidos.caida.reproducir();
             terminoJuego();
         }
     }
     
+    public void perdidaDeVida(){
+        this.personaje.disminuirVida();
+        this.sonidos.perdidaDeVida.reproducir();
+        animacionPerdidaVida();
+    }
+    
+    public void animacionPerdidaVida(){
+        Thread animacion = new Thread(new Animacion(100,this.personaje.getPosicionesDeImgAnimacionVidaPerdida(),personaje));
+        animacion.start();
+    }
+    
     public void terminoJuego(){
-        if(vidas==0){
+        if(this.personaje.getVidas()==0){
             System.out.println("Game Over");
         }
+    }
+    
+    public  void drawVida(Graphics g){   
+        g.drawImage(personaje.getVidaImage(),0, 0, personaje.getAnchoImgVida()*scale, personaje.getAltoImgVida()*scale,
+        this.personaje.getPosXImgVidaPaint(), this.personaje.getPosYImgVidaPaint(), this.personaje.getPosXImgVidaPaint()+personaje.getAnchoImgVida(), this.personaje.getPosYImgVidaPaint()+this.personaje.getAltoImgVida(),this);
+//        System.out.println(this.personaje.getPosXImgVidaPaint()+","+this.personaje.getPosYImgVidaPaint());
+//        System.out.println(personaje.getPosXImgVidaPaint()+","+personaje.getPosYImgVidaPaint()+","+(this.personaje.getPosXImgVidaPaint()+personaje.getAnchoImgVida())+","+(this.personaje.getPosYImgVidaPaint()+this.personaje.getAltoImgVida()));
+//        g.drawRect(0, 0, this.personaje.getAnchoImgVida()*scale, this.personaje.getAltoImgVida()*scale);
+//        g.drawImage(this.personaje.getVidaImage(), 0, 0, this);
+//        g.drawImage(this.personaje.getVidaImage(), unidadMapaGrande, unidadMapaGrande, this.personaje.getAnchoImgVida(), this.personaje.getAltoImgVida(), this);
     }
     
     public void mapa1(Graphics g){
@@ -629,7 +656,7 @@ public class Board extends JPanel implements ActionListener {
                 
                 g.drawImage(fondo,posX*unidadMapaGrande+moverMapa,posY*unidadMapaGrande,posX*unidadMapaGrande+unidadMapaGrande+moverMapa,posY*unidadMapaGrande+unidadMapaGrande,
                 mapa[posY][posX+moverImgMapa][1][0]*unidadMapaOriginal,mapa[posY][posX+moverImgMapa][1][1]*unidadMapaOriginal,mapa[posY][posX+moverImgMapa][1][0]*unidadMapaOriginal+16,mapa[posY][posX+moverImgMapa][1][1]*unidadMapaOriginal+16, this);   
-                
+
                 agregarColision(mapa[posY][posX+moverImgMapa][1][2],posX,posY,this.scale,g,moverMapa);
             };
         };

@@ -6,7 +6,9 @@
 package greedyking;
 
 import java.awt.Image;
+import java.util.TimerTask;
 import javax.swing.ImageIcon;
+import javax.swing.Timer;
 
 /**
  *
@@ -31,12 +33,23 @@ public class Personaje {
         {105,2},{130,2},{155,2},{181,2},//salto derecha
         {122,2},{147,2},{172,2},{198,2}//salto izquierda
     };
+    private int[][] imgVidas ={
+        {0,0},{23,0},{46,0},{253,0},//Imagenes de las vidas 1,2,3
+        {69,0},{92,0},{115,0},{138,0},{161,0},{184,0},//Perdidad corazon
+        {207,0},{230,0}//perdida juego
+    };
+    private int[] posicionesDeImgAnimacionVidaPerdida = {4,5,6,7,8,9,10,11};
     private boolean noPermitirCambioImgMovimiento;
     private Image pjImage;
+    private Image vidaImage;
+    private int vidas;
+    private int numImgVida;
+    private int anchoImgVida;
+    private int altoImgVida;
     
-
     public Personaje(int escala) {
         this.pjImage = loadImage("Animacion Pj.png");
+        this.vidaImage = loadImage("vida.png");
         this.scale = escala;
         this.unidadAnchoRun = 17 * this.scale;
         this.unidadAltoRun = 22 * this.scale;
@@ -48,6 +61,10 @@ public class Personaje {
         this.posicionYPaint=posicionY;
         this.numImagen = 0;
         this.noPermitirCambioImgMovimiento=false;
+        this.vidas = 3;
+        this.numImgVida =0;
+        this.anchoImgVida = 22;
+        this.altoImgVida = 19;
     };
     
     public void moveRight() {
@@ -62,6 +79,48 @@ public class Personaje {
         };
     };
 
+    //vidas
+    public int getPosXImgVidaPaint() {
+        return this.imgVidas[this.numImgVida][0];
+    }
+
+    public int getPosYImgVidaPaint() {
+        return this.imgVidas[this.numImgVida][1];
+    }
+
+    public Image getVidaImage() {
+        return vidaImage;
+    }
+
+    public int getAnchoImgVida() {
+        return anchoImgVida;
+    }
+
+    public int getAltoImgVida() {
+        return altoImgVida;
+    }
+
+    public void disminuirVida() {
+        this.vidas--;
+    }
+
+    public int getNumImgVida() {
+        return numImgVida;
+    }
+    
+    public int getVidas() {
+        return vidas;
+    }
+
+    public int[] getPosicionesDeImgAnimacionVidaPerdida() {
+        return posicionesDeImgAnimacionVidaPerdida;
+    }
+
+    public void setNumImgVida(int numImgVida) {
+        this.numImgVida = numImgVida;
+    }
+    
+    
     public int getNumImagen() {
         return numImagen;
     }
@@ -192,7 +251,7 @@ public class Personaje {
         return pjImage;
     }
     
-    public Image loadImage(String imageName) {
+    public static Image loadImage(String imageName) {
         ImageIcon ii = new ImageIcon(imageName);
         Image image = ii.getImage();
         return image;
@@ -201,5 +260,4 @@ public class Personaje {
     public boolean isNoPermitirCambioImgMovimiento() {
         return noPermitirCambioImgMovimiento;
     }
-    
 };
