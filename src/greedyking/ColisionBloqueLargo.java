@@ -24,9 +24,12 @@ public class ColisionBloqueLargo extends MapaPadre{
         this.posicionYFinal = posicionYFinal;
         makeCollision();
     }
+    
+    
+    
     private void makeCollision(){
         this.ColisionBloque = new
-        Rectangle(posicionX * unidadMapaGrande, posicionY * unidadMapaGrande, posicionXFinal * unidadMapaGrande, posicionYFinal * unidadMapaGrande);
+        Rectangle(posicionX, posicionY, posicionXFinal, posicionYFinal);
         g.drawRect(ColisionBloque.x, ColisionBloque.y, ColisionBloque.width, ColisionBloque.height);
 //        System.out.println(posicionX+","+posicionY+","+posicionXFinal+","+posicionYFinal);
 //        g.drawRect(0*unidadMapaGrande, 8*unidadMapaGrande, 18*unidadMapaGrande, 1*unidadMapaGrande);

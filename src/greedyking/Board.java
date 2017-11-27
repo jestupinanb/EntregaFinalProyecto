@@ -39,6 +39,7 @@ public class Board extends JPanel implements ActionListener {
     private ArrayList<MapaColision> colisionMovY = new ArrayList();
     private ArrayList<MapaColision> colisionMovX = new ArrayList();
     private ArrayList<MapaColision> colisionMovXY = new ArrayList();
+    private ArrayList<ColisionBloqueLargo> colisionCofres = new ArrayList();
     private ColisionBloqueLargo colisionBloqueLargoCaida;//Colision cuando cae el personaje
     private ColisionBloqueLargo colisionBloqueLargoDerecha;
     private ColisionBloqueLargo colisionBloqueLargoIzquierda;
@@ -71,7 +72,7 @@ public class Board extends JPanel implements ActionListener {
     
     //Mapa
     private int moverImgMapa = 0;//Dependiendo del numero que tenga mueve esa cantidad de columnas la matriz 
-    private int cuadroInicioMapa = -1;
+    private int cuadroInicioMapa =-1;
     private int moverMapa = cuadroInicioMapa*unidadMapaGrande;
     int posInicioCreacionMapa = cuadroInicioMapa*unidadMapaGrande;
     
@@ -140,13 +141,16 @@ public class Board extends JPanel implements ActionListener {
     int[] f045 = {11, 2, 0};
     int[] f046 = {12, 2, 2};
     int[] f132 = {13, 7, 0};
+    //cofres
+    int[] f101 = {16, 5, 4};
+    
     int[][][][] mapa = {
         //    0          1              2               3             4           5             6             7             8             9             10           11             12            13            14            15           16             17            18            19            20            21            22            23            24            25            26            27             28            29
         {{fnul,f107},{f107, f061}, {fnul, f062}, {fnul, f062}, {f107, f063}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {f107, f020}, {f107, f021}, {f107, f022}, {f107, f023}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}},//0
         {{fnul,f107},{fnul, f107}, {f107, f068}, {f107, f069}, {f107, f070}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {f107, f036}, {f107, f037}, {f107, f038}, {f107, f039}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {f107, f113}, {f107, f114}, {f107, f114}, {f107, f114}, {f107, f114}, {f107, f114}, {f107, f114}, {f107, f114}, {f107, f114}, {f107, f115}, {fnul, f107}},//1
         {{fnul,f107},{fnul, f107}, {fnul, f107}, {f107, f086}, {f107, f087}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {f107, f053}, {f107, f054}, {f107, f055}, {fnul, f107}, {fnul, f107}, {f107, f113}, {f107, f114}, {fnul, f164}, {fnul, f131}, {fnul, f131}, {fnul, f131}, {fnul, f131}, {fnul, f131}, {fnul, f131}, {fnul, f131}, {fnul, f131}, {fnul, f131}, {f107, f114}},//2
         {{fnul,f107},{fnul, f107}, {fnul, f107}, {f107, f113}, {f107, f114}, {f107, f114}, {f107, f115}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {f107, f041}, {f107, f071}, {f107, f041}, {f107, f041}, {f107, f113}, {fnul, f164}, {fnul, f131}, {fnul, f131}, {fnul, f131}, {fnul, f131}, {fnul, f131}, {fnul, f131}, {fnul, f131}, {fnul, f131}, {fnul, f131}, {fnul, f131}, {fnul, f131}, {fnul, f131}},//3
-        {{fnul,f107},{fnul, f107}, {fnul, f107}, {f107, f130}, {fnul, f131}, {fnul, f131}, {f107, f132}, {fnul, f107}, {fnul, f107}, {f107, f041}, {fnul, f107}, {f107, f088}, {f107, f106}, {fnul, f107}, {f107, f130}, {fnul, f131}, {fnul, f131}, {f131, f027}, {fnul, f028}, {fnul, f028}, {fnul, f028}, {fnul, f028}, {fnul, f028}, {fnul, f028}, {fnul, f028}, {fnul, f028}, {f131, f029}, {fnul, f131}},//4
+        {{fnul,f107},{fnul, f107}, {fnul, f107}, {f107, f130}, {fnul, f131}, {fnul, f131}, {f107, f132}, {fnul, f107}, {f107, f101}, {f107, f041}, {fnul, f107}, {f107, f088}, {f107, f106}, {fnul, f107}, {f107, f130}, {fnul, f131}, {fnul, f131}, {f131, f027}, {fnul, f028}, {fnul, f028}, {fnul, f028}, {fnul, f028}, {fnul, f028}, {fnul, f028}, {fnul, f028}, {fnul, f028}, {f131, f029}, {fnul, f131}},//4
         {{fnul,f107},{fnul, f107}, {fnul, f107}, {f107, f130}, {fnul, f131}, {f131, f027}, {fnul, f028}, {fnul, f028}, {fnul, f028}, {f107, f029}, {fnul, f107}, {f107, f105}, {f107, f106}, {fnul, f107}, {f107, f027}, {fnul, f028}, {fnul, f028}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f028}},//5
         {{fnul,f107},{fnul, f008}, {fnul, f008}, {fnul, f009}, {fnul, f028}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {f127, f046}, {fnul, f127}, {fnul, f127}, {fnul, f127}, {fnul, f127}, {f127, f044}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}},//6
         {{fnul,f107},{fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {f144, f046}, {fnul, f144}, {fnul, f144}, {fnul, f144}, {fnul, f144}, {f144, f044}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}},//7
@@ -157,6 +161,7 @@ public class Board extends JPanel implements ActionListener {
     private int cuadroInicioMovMapaPersonaje = 8;
     
     public Board() {
+        
         this.personaje = new Personaje(scale);
         timer = new Timer(this.delay,this);
         setFocusable(true);
@@ -429,6 +434,15 @@ public class Board extends JPanel implements ActionListener {
                 return colisionoBoolean;
     }
     
+    public boolean colisionoConCofres(boolean colisionoBoolean){
+        for(ColisionBloqueLargo cofre:colisionCofres){
+            if(personajeColision.intersects(cofre.getColisionBloque())){
+                colisionoBoolean=true;
+            }
+        }
+        return colisionoBoolean;
+    };
+    
     @Override
     public void paintComponent(Graphics g) {
 //        System.out.println("PressD "+pressD+" PressA "+pressA);
@@ -580,11 +594,14 @@ public class Board extends JPanel implements ActionListener {
             personaje.positionXYEqualsPositionXYPaint();//Se encarga de que la imagen coincida con la colision
             contadorDelays = 0;
         } else {contadorDelays++;};
+        
         moverPj(g, true);
+        if(colisionoConCofres(false)){
+            System.out.println("Colisiono");
+        };
         colisionConBloqueCaida();
         
         drawVida(g);
-        
     }
     
     public void reproducirSonidoSalto(){
@@ -605,7 +622,7 @@ public class Board extends JPanel implements ActionListener {
     public void colisionConBloqueCaida(){
         if(personajeColision.intersects(this.colisionBloqueLargoCaida.getColisionBloque())){
             personaje.setPosicionX(0);
-            personaje.setPosicionY(0);
+            personaje.setPosicionY(unidadMapaGrande);
             perdidaDeVida();
             this.sonidos.caida.reproducir();
             terminoJuego();
@@ -643,6 +660,7 @@ public class Board extends JPanel implements ActionListener {
         colisionMovX.clear();
         colisionMovY.clear();
         colisionMovXY.clear();
+        colisionCofres.clear();
         Image fondo = loadImage("Tiles.png");
         for(int posY=0;posY<8;posY++){
             for (int posX=0; posX<19; posX++) {//Largo
@@ -661,13 +679,13 @@ public class Board extends JPanel implements ActionListener {
             };
         };
         //bloque de caida
-        this.colisionBloqueLargoCaida = new ColisionBloqueLargo(0,8,this.scale,g,18,1);
+        this.colisionBloqueLargoCaida = new ColisionBloqueLargo((0+cuadroInicioMapa)*unidadMapaGrande,8*unidadMapaGrande,this.scale,g,(18+cuadroInicioMapa)*unidadMapaGrande,1*unidadMapaGrande);
         //bloque de la derecha
-        this.colisionBloqueLargoDerecha = new ColisionBloqueLargo(18+cuadroInicioMapa,0,this.scale,g,2,8);
+        this.colisionBloqueLargoDerecha = new ColisionBloqueLargo((18+cuadroInicioMapa)*unidadMapaGrande,0*unidadMapaGrande,this.scale,g,1*unidadMapaGrande,8*unidadMapaGrande);
         //bloque de la izquierda
-        this.colisionBloqueLargoIzquierda = new ColisionBloqueLargo(cuadroInicioMapa,0,this.scale,g,1,8);
+        this.colisionBloqueLargoIzquierda = new ColisionBloqueLargo(cuadroInicioMapa*unidadMapaGrande,0*unidadMapaGrande,this.scale,g,1*unidadMapaGrande,8*unidadMapaGrande);
         //Barras de mov del mapa
-        g.drawRect(posInicioCreacionMapa, 0, unidadMapaGrande, 8*unidadMapaGrande);//Barra inicial
+//        g.drawRect(posInicioCreacionMapa, 0, unidadMapaGrande, 8*unidadMapaGrande);//Barra inicial
 //        g.drawRect(18*unidadMapaGrande+posInicioCreacionMapa, 0, unidadMapaGrande, 8*unidadMapaGrande);//Barra finañ
     }
     
@@ -682,6 +700,9 @@ public class Board extends JPanel implements ActionListener {
                 break;
             case 3:
                 this.colisionMovXY.add(new MapaColision(x, y, this.scale, g, "xy",moverMapa));
+                break;
+            case 4:
+                this.colisionCofres.add(new ColisionBloqueLargo(x*unidadMapaGrande+moverMapa+1*scale,y*unidadMapaGrande+3*scale,this.scale, g,unidadMapaGrande-2*scale,unidadMapaGrande-3*scale));
                 break;
         };
     };
