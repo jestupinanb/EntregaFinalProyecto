@@ -13,8 +13,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Scanner;
 import java.util.TimerTask;
 import javax.sound.sampled.FloatControl;
 import javax.swing.ImageIcon;
@@ -76,87 +79,12 @@ public class Board extends JPanel implements ActionListener {
     private int moverMapa = cuadroInicioMapa*unidadMapaGrande;
     int posInicioCreacionMapa = cuadroInicioMapa*unidadMapaGrande;
     
-    //        System.out.println("Se pinto mapa");//BORRAR
-    int[] fnul = {-1, -1, 0};//SinFondo
-    int[] f107 = {5, 6, 0};//fondoVerde
-
-    int[] f027 = {10, 1, 3};//BloqueEsquinaArribaIzquierda
-    int[] f028 = {11, 1, 1};//BloqueBaseArriba
-    int[] f029 = {12, 1, 3};//BloqueEsquinaArribaDerecha
-    int[] f041 = {7, 2, 3};//BloqueSolido
-
-    int[] f061 = {10, 3, 3};//BloqueEsquinaAbajoIzquierda
-    int[] f062 = {11, 3, 1};//BloqueBaseAbajo
-    int[] f063 = {12, 3, 3};//BloqueEsquinaAbajoDerecha
-
-    int[] f127 = {8, 7, 0};//MarBurbujas
-    int[] f144 = {8, 8, 0};//MarOscuro  
-
-    int[] f113 = {11, 6, 0};//FondoPastoArribaIzquierda
-    int[] f114 = {12, 6, 0};//FondoPastoArribaBase
-    int[] f115 = {13, 6, 0};//FondoPastoArribaIzquierda
-    int[] f164 = {11, 9, 0};//FondoUnionPasto
-
-    //Arbol
-    int[] f020 = {3, 1, 0};
-    int[] f021 = {4, 1, 0};
-    int[] f022 = {5, 1, 0};
-    int[] f023 = {6, 1, 0};
-    int[] f036 = {2, 2, 0};
-    int[] f037 = {3, 2, 0};
-    int[] f038 = {4, 2, 0};
-    int[] f039 = {5, 2, 0};
-    int[] f053 = {2, 3, 0};
-    int[] f054 = {3, 3, 0};
-    int[] f055 = {4, 3, 0};
-    int[] f056 = {5, 3, 0};
-    int[] f071 = {3, 4, 0};
-    int[] f072 = {4, 4, 0};
-    int[] f073 = {5, 4, 0};
-    int[] f088 = {3, 5, 0};
-    int[] f089 = {4, 5, 0};
-    int[] f105 = {3, 6, 0};
-    int[] f106 = {4, 6, 0};
-    int[] f122 = {3, 7, 0};
-    int[] f123 = {4, 7, 0};
-    int[] f138 = {2, 8, 0};
-    int[] f139 = {3, 8, 0};
-    int[] f140 = {4, 8, 0};
-
-    int[] f017 = {0, 1, 0};
-    int[] f018 = {1, 1, 0};
-    int[] f35 = {1, 2, 0};
-
-    int[] f068 = {0, 4, 0};
-    int[] f069 = {1, 4, 0};
-    int[] f070 = {2, 4, 0};
-    int[] f086 = {1, 5, 0};
-    int[] f087 = {2, 5, 0};
-
-    int[] f008 = {8, 0, 1};
-    int[] f009 = {9, 0, 1};
-    int[] f130 = {11, 7, 0};
-    int[] f131 = {12, 7, 0};//int[] f = {,};
-    int[] f044 = {10, 2, 2};
-    int[] f045 = {11, 2, 0};
-    int[] f046 = {12, 2, 2};
-    int[] f132 = {13, 7, 0};
-    //cofres
-    int[] f101 = {16, 5, 4};
-    
-    int[][][][] mapa = {
-        //    0          1              2               3             4           5             6             7             8             9             10           11             12            13            14            15           16             17            18            19            20            21            22            23            24            25            26            27             28            29
-        {{fnul,f107},{f107, f061}, {fnul, f062}, {fnul, f062}, {f107, f063}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {f107, f020}, {f107, f021}, {f107, f022}, {f107, f023}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}},//0
-        {{fnul,f107},{fnul, f107}, {f107, f068}, {f107, f069}, {f107, f070}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {f107, f036}, {f107, f037}, {f107, f038}, {f107, f039}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {f107, f113}, {f107, f114}, {f107, f114}, {f107, f114}, {f107, f114}, {f107, f114}, {f107, f114}, {f107, f114}, {f107, f114}, {f107, f115}, {fnul, f107}},//1
-        {{fnul,f107},{fnul, f107}, {fnul, f107}, {f107, f086}, {f107, f087}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {f107, f053}, {f107, f054}, {f107, f055}, {fnul, f107}, {fnul, f107}, {f107, f113}, {f107, f114}, {fnul, f164}, {fnul, f131}, {fnul, f131}, {fnul, f131}, {fnul, f131}, {fnul, f131}, {fnul, f131}, {fnul, f131}, {fnul, f131}, {fnul, f131}, {f107, f114}},//2
-        {{fnul,f107},{fnul, f107}, {fnul, f107}, {f107, f113}, {f107, f114}, {f107, f114}, {f107, f115}, {fnul, f107}, {fnul, f107}, {fnul, f107}, {f107, f041}, {f107, f071}, {f107, f041}, {f107, f041}, {f107, f113}, {fnul, f164}, {fnul, f131}, {fnul, f131}, {fnul, f131}, {fnul, f131}, {fnul, f131}, {fnul, f131}, {fnul, f131}, {fnul, f131}, {fnul, f131}, {fnul, f131}, {fnul, f131}, {fnul, f131}},//3
-        {{fnul,f107},{fnul, f107}, {fnul, f107}, {f107, f130}, {fnul, f131}, {fnul, f131}, {f107, f132}, {fnul, f107}, {f107, f101}, {f107, f041}, {fnul, f107}, {f107, f088}, {f107, f106}, {fnul, f107}, {f107, f130}, {fnul, f131}, {fnul, f131}, {f131, f027}, {fnul, f028}, {fnul, f028}, {fnul, f028}, {fnul, f028}, {fnul, f028}, {fnul, f028}, {fnul, f028}, {fnul, f028}, {f131, f029}, {fnul, f131}},//4
-        {{fnul,f107},{fnul, f107}, {fnul, f107}, {f107, f130}, {fnul, f131}, {f131, f027}, {fnul, f028}, {fnul, f028}, {fnul, f028}, {f107, f029}, {fnul, f107}, {f107, f105}, {f107, f106}, {fnul, f107}, {f107, f027}, {fnul, f028}, {fnul, f028}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f028}},//5
-        {{fnul,f107},{fnul, f008}, {fnul, f008}, {fnul, f009}, {fnul, f028}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {f127, f046}, {fnul, f127}, {fnul, f127}, {fnul, f127}, {fnul, f127}, {f127, f044}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}},//6
-        {{fnul,f107},{fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {f144, f046}, {fnul, f144}, {fnul, f144}, {fnul, f144}, {fnul, f144}, {f144, f044}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}, {fnul, f045}},//7
-    };
     //sonido
     Sonidos sonidos = new Sonidos();
+    
+    ArrayList<int[]> tiles;
+    int mapa[][][][] = new int[8][29][2][3];
+    
     
     private int cuadroInicioMovMapaPersonaje = 8;
     
@@ -174,6 +102,63 @@ public class Board extends JPanel implements ActionListener {
         sonidos.caida.asignarDireccion("sfx_sounds_falling12", false);
         sonidos.perdidaDeVida.asignarDireccion("sfx_deathscream_human1", false);
         this.firstTimeD = true;
+        
+        tiles = new ArrayList();
+        
+        for(int i =0;i< 10;i++){
+            for(int f = 0; f<17; f++){
+                int[] x = {f,i,0};
+                tiles.add(x);
+            }
+        }
+        tiles.get(7)[2] = 1;
+        tiles.get(8)[2] = 1;
+        tiles.get(9)[2] = 1;
+
+        tiles.get(25)[2] = 3;
+        tiles.get(26)[2] = 3;
+        tiles.get(27)[2] = 3;
+        tiles.get(28)[2] = 1;
+        tiles.get(29)[2] = 3;
+        tiles.get(30)[2] = 3;
+        tiles.get(41)[2] = 3;
+        tiles.get(42)[2] = 3;
+        tiles.get(43)[2] = 3;
+        tiles.get(44)[2] = 2;
+        tiles.get(46)[2] = 2;
+        tiles.get(47)[2] = 2;
+        tiles.get(58)[2] = 1;
+        tiles.get(59)[2] = 1;
+        tiles.get(60)[2] = 1;
+        tiles.get(61)[2] = 3;
+        tiles.get(62)[2] = 1;
+        tiles.get(63)[2] = 3;
+        tiles.get(64)[2] = 3;
+        tiles.get(75)[2] = 1;
+        tiles.get(76)[2] = 1;
+        tiles.get(77)[2] = 1;
+        tiles.get(78)[2] = 3;
+        tiles.get(79)[2] = 1;
+        tiles.get(80)[2] = 3;
+        tiles.get(81)[2] = 3;
+        tiles.get(93)[2] = 3;
+        tiles.get(94)[2] = 3;
+        tiles.get(95)[2] = 2;
+        tiles.get(97)[2] = 2;
+        tiles.get(98)[2] = 2;
+        int[] z = {-1,-1,0};
+        tiles.set(169, z);
+        int i = 0;
+        for(int x[]:tiles){
+            
+            System.out.println(i+" "+x[2]);
+        i++;}
+        try{
+        leerMapa();
+        }catch(FileNotFoundException e){
+            System.out.println("ERRRROR");
+        }
+        
     }
     
     public void otherKeyPressed(int key){
@@ -218,6 +203,25 @@ public class Board extends JPanel implements ActionListener {
             };
             lastKeyPressed=key;
         }
+    }
+    
+    public void leerMapa() throws FileNotFoundException{
+        ArrayList<int[]> a =tiles;
+        int k=0;
+        int temporal;
+        Scanner leer = new Scanner(new File("mapa.txt"));
+        while(leer.hasNext()){
+            for (int i = 0; i < 29; i++) {
+                for(int j=0; j<2; j++){
+                    temporal = leer.nextInt();
+                    mapa[k][i][j] = a.get(temporal);
+                    System.out.print(temporal+" ");
+                }
+            }
+            k++;
+            System.out.println("K="+k);
+        };
+        System.out.println("Termino");
     }
     
     private class EventosTeclado extends KeyAdapter {
@@ -572,7 +576,7 @@ public class Board extends JPanel implements ActionListener {
 //                    System.out.println("Personaje posicion" + personaje.getPositionX() + "=" + 7 * unidadMapaGrande);
 //                    System.out.println("Mover mapa "+moverMapa);
 //                    System.out.println("posicion x"+personaje.getPositionX()+">="+cuadroInicioMovMapaPersonaje * unidadMapaGrande);
-                    if((moverMapa%unidadMapaGrande!=0 || moverImgMapa!=9) && (personaje.getPositionX() >= cuadroInicioMovMapaPersonaje * unidadMapaGrande)){
+                    if((moverMapa%unidadMapaGrande!=0 || moverImgMapa!=10) && (personaje.getPositionX() >= cuadroInicioMovMapaPersonaje * unidadMapaGrande)){
                         moverMapa-=scale;
                         if(moverMapa==posInicioCreacionMapa-unidadMapaGrande){//if(moverMapa==posInicioCreacionMapa-1*unidadMapaGrande){
                             moverImgMapa++;
