@@ -1,3 +1,7 @@
 Nickname 100
 Andres 3000
-Juan 58
+Juan 100
+otro 0
+funciona 100
+nuevo 100
+nuevo 100

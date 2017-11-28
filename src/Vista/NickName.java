@@ -121,10 +121,11 @@ public class NickName extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
-GreedyKing d=new GreedyKing(this.jTextField1.getText());
+this.dispose();
+//        GreedyKing d=new GreedyKing(this.jTextField1.getText());
 
 String[] args={"Inicio Juego"};
-GreedyKing.main(args);
+GreedyKing.main(args,this.jTextField1.getText());
 // TODO add your handling code here:
     }//GEN-LAST:event_jButton1MouseClicked
 

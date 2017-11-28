@@ -12,6 +12,7 @@ import javax.swing.JFrame;
  * @author Jaime
  */
 public class GreedyKing extends JFrame {
+    
     public GreedyKing(String Nickname){
         initUI(Nickname);
         this.Nickname = Nickname;
@@ -21,7 +22,7 @@ public class GreedyKing extends JFrame {
     private final int alto = 8*16;
     
     public void initUI(String Nickname){
-        Board b=new Board();
+        Board b=new Board(this);
         b.setNickName(Nickname);
         add(b);
         setSize(ancho*4+16,alto*4+39);//Ancho y alto
@@ -30,8 +31,8 @@ public class GreedyKing extends JFrame {
         setLocationRelativeTo(null);
     };
     
-    public static void main(String[] args) {
-        GreedyKing ex = new GreedyKing(Nickname);
+    public static void main(String[] args,String nickName) {
+        GreedyKing ex = new GreedyKing(nickName);
         ex.setVisible(true);
     }   
 }

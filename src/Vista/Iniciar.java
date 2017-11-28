@@ -71,7 +71,7 @@ public class Iniciar extends javax.swing.JFrame {
                 NewGameMouseExited(evt);
             }
         });
-        jPanel1.add(NewGame, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 280, -1, -1));
+        jPanel1.add(NewGame, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 280, -1, -1));
 
         jLabel4.setFont(new java.awt.Font("Times New Roman", 1, 48)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(0, 102, 0));
@@ -83,6 +83,12 @@ public class Iniciar extends javax.swing.JFrame {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 GameNMouseClicked(evt);
             }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                GameNMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                GameNMouseExited(evt);
+            }
         });
         jPanel1.add(GameN, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 280, -1, -1));
 
@@ -90,6 +96,12 @@ public class Iniciar extends javax.swing.JFrame {
         ScoresN.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 ScoresNMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                ScoresNMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                ScoresNMouseExited(evt);
             }
         });
         jPanel1.add(ScoresN, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 410, -1, -1));
@@ -142,7 +154,8 @@ s.show();
     }//GEN-LAST:event_ScoresNMouseClicked
 
     private void ScoresAMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ScoresAMouseEntered
-this.ScoresA.setVisible(false);        // TODO add your handling code here:
+this.ScoresA.setVisible(false);  
+// TODO add your handling code here:
     }//GEN-LAST:event_ScoresAMouseEntered
 
     private void ScoresAMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ScoresAMouseExited
@@ -152,6 +165,25 @@ this.ScoresA.setVisible(true);        // TODO add your handling code here:
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
 System.exit(0);        // TODO add your handling code here:
     }//GEN-LAST:event_jButton1MouseClicked
+
+    private void GameNMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_GameNMouseEntered
+this.NewGame.setVisible(false);  
+this.GameN.setVisible(true);// TODO add your handling code here:
+    }//GEN-LAST:event_GameNMouseEntered
+
+    private void GameNMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_GameNMouseExited
+
+this.NewGame.setVisible(true);// TODO add your handling code here:
+    }//GEN-LAST:event_GameNMouseExited
+
+    private void ScoresNMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ScoresNMouseEntered
+this.ScoresA.setVisible(false);
+// TODO add your handling code here:
+    }//GEN-LAST:event_ScoresNMouseEntered
+
+    private void ScoresNMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ScoresNMouseExited
+this.ScoresA.setVisible(true);        // TODO add your handling code here:
+    }//GEN-LAST:event_ScoresNMouseExited
 
     /**
      * @param args the command line arguments

@@ -21,11 +21,11 @@ public class Scores extends javax.swing.JFrame {
     public Scores() {
         initComponents();
         CargarScore c=new CargarScore();
-        this.Texto.setFont(new Font("Times NewRoman",Font.BOLD,15));
+        this.Texto.setFont(new Font("Times NewRoman",Font.BOLD,20));
         this.Texto.setBorder(new RoundedBorder(10));
        String puntajes="";
         for(Score s: c.Puntajes()){
-       puntajes+=s.getNombre()+" \t\t"+s.getPuntaje()+"\n";
+       puntajes+=s.getNombre()+" \t"+s.getPuntaje()+"\n";
       
         }
        this.Texto.setText(puntajes);
