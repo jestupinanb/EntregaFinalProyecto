@@ -17,6 +17,7 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
@@ -33,12 +34,17 @@ import javax.swing.Timer;
  * @author Jaime
  */
 public class Board extends JPanel implements ActionListener {
-   private String Nickname;
-   
+    
+    private String nickName;
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
+    }
+    
     private int scale = 4;//El tamaño al que se aumenta el juego 1 = originial, 2 = al doble de grande, 3 = triple de grande etc...
     private int unidadMapaOriginal = 16;//El tile del mapa esta dividido en cuadros de 16x16
     private int unidadMapaGrande = 16*scale;//Tamaño que va a terner el juego al ejecutarse
-    private int delay = 8;
+    private final int delay = 8;
     Personaje personaje;//Crear un personaje
     private Timer timer;
     Rectangle personajeColision;
@@ -48,7 +54,7 @@ public class Board extends JPanel implements ActionListener {
     private ArrayList<MapaColision> colisionMovY = new ArrayList();
     private ArrayList<MapaColision> colisionMovX = new ArrayList();
     private ArrayList<MapaColision> colisionMovXY = new ArrayList();
-    private ArrayList<ColisionBloqueLargo> colisionCofres = new ArrayList();
+    private ArrayList<Cofre> colisionCofres = new ArrayList();
     private ColisionBloqueLargo colisionBloqueLargoCaida;//Colision cuando cae el personaje
     private ColisionBloqueLargo colisionBloqueLargoDerecha;
     private ColisionBloqueLargo colisionBloqueLargoIzquierda;
@@ -81,7 +87,7 @@ public class Board extends JPanel implements ActionListener {
     
     //Mapa
     private int moverImgMapa = 0;//Dependiendo del numero que tenga mueve esa cantidad de columnas la matriz 
-    private int cuadroInicioMapa =1;
+    private int cuadroInicioMapa =-1;
     private int moverMapa = cuadroInicioMapa*unidadMapaGrande;
     int posInicioCreacionMapa = cuadroInicioMapa*unidadMapaGrande;
     
@@ -91,10 +97,13 @@ public class Board extends JPanel implements ActionListener {
     ArrayList<int[]> tiles;
     int mapa[][][][] = new int[8][29][2][3];
     
-    
     private int cuadroInicioMovMapaPersonaje = 8;
+    
     //Enemigos
-    private Enemigo enemigo;  
+    private Enemigo enemigo;
+    
+    //Score
+    private int score = 0;
     
     public Board() {
         try {
@@ -159,23 +168,21 @@ public class Board extends JPanel implements ActionListener {
         tiles.get(95)[2] = 2;
         tiles.get(97)[2] = 2;
         tiles.get(98)[2] = 2;
+        tiles.get(101)[2] = 4;
         int[] z = {-1,-1,0};
         tiles.set(169, z);
-        int i = 0;
-        for(int x[]:tiles){
-            
-            System.out.println(i+" "+x[2]);
-        i++;}
+//        int i = 0;
+//        for(int x[]:tiles){
+//            System.out.println(i+" "+x[2]);
+//        i++;}
         try{
         leerMapa();
         }catch(FileNotFoundException e){
-            System.out.println("ERRRROR");
+            System.out.println("Error al leer el mapa");
         }
         
     }
-    public String getNickname(){
-    return this.Nickname;
-    }
+    
     public void otherKeyPressed(int key){
 //        System.out.println("Laskey "+KeyEvent.getKeyText(lastKeyPressed)+" key "+KeyEvent.getKeyText(key));
         if(lastKeyPressed!=key){
@@ -221,26 +228,24 @@ public class Board extends JPanel implements ActionListener {
     }
     
     public void leerMapa() throws FileNotFoundException{
-        ArrayList<int[]> a =tiles;
+        ArrayList<int[]> a = tiles;
         int k=0;
-        int temporal;
+//        int temporal;
         Scanner leer = new Scanner(new File("mapa.txt"));
         while(leer.hasNext()){
             for (int i = 0; i < 29; i++) {
                 for(int j=0; j<2; j++){
-                    temporal = leer.nextInt();
-                    mapa[k][i][j] = a.get(temporal);
-                    //System.out.print(temporal+" ");
+//                    temporal = leer.nextInt();
+                    mapa[k][i][j] = a.get(leer.nextInt());
+//                    System.out.print(temporal+" ");
                 }
             }
             k++;
-           // System.out.println("K="+k);
+            System.out.println("K="+k);
         };
-        //System.out.println("Termino");
+        System.out.println("Termino");
     }
-    public void SetNickname(String nombre){
-    this.Nickname=nombre;
-    }
+    
     private class EventosTeclado extends KeyAdapter {
         boolean otherKeyPress;
         @Override
@@ -248,7 +253,6 @@ public class Board extends JPanel implements ActionListener {
 //            pressS = false;pressW=false;pressA=false;pressD=false;
             int key = e.getKeyCode();
 //            System.out.println("Ultima tecla presionada "+KeyEvent.getKeyText(key));
-
             switch (key){
                 case KeyEvent.VK_D:
 //                    if(firstTimeD){firstTimeD = true;};
@@ -318,8 +322,8 @@ public class Board extends JPanel implements ActionListener {
                     break;
                 case KeyEvent.VK_LEFT:
                     if(moverImgMapa>0){
-                   // System.out.println("MOVE LEFT MoverImgMapa--");
-                    moverImgMapa--;}else{/*System.out.println("Distancia minima");*/}
+                    System.out.println("MOVE LEFT MoverImgMapa--");
+                    moverImgMapa--;}else{System.out.println("Distancia minima");}
                     break;
                 case KeyEvent.VK_E:
                     sonidos.musicaFondo.stop();
@@ -351,20 +355,6 @@ public class Board extends JPanel implements ActionListener {
         tiempoDelay=true;
         timeTrue.cancel();
     }
-    
-    public boolean colisionoBajando(boolean colisionoBoolean){
-        for (MapaColision colisiono : colisionMovY) {
-                if (personajeColisionPies.intersects(colisiono.getCollisionBloqueUp())) {
-                    colisionoBoolean = true;
-                };
-            }
-            for (MapaColision colisiono : colisionMovXY) {
-                if (personajeColisionPies.intersects(colisiono.getCollisionBloqueUp())) {
-                    colisionoBoolean = true;
-                };
-            };
-            return colisionoBoolean;
-    };
     
     private void ajustarImagen(){
 //        personaje.noPermitirCambioImgMovimiento(false);
@@ -403,6 +393,20 @@ public class Board extends JPanel implements ActionListener {
                 break;
         }
     }
+    
+    public boolean colisionoBajando(boolean colisionoBoolean){
+        for (MapaColision colisiono : colisionMovY) {
+                if (personajeColisionPies.intersects(colisiono.getCollisionBloqueUp())) {
+                    colisionoBoolean = true;
+                };
+            }
+            for (MapaColision colisiono : colisionMovXY) {
+                if (personajeColisionPies.intersects(colisiono.getCollisionBloqueUp())) {
+                    colisionoBoolean = true;
+                };
+            };
+            return colisionoBoolean;
+    };
     
     public boolean colisionoIzquierda(boolean colisionoBoolean){
         if (tiempoDelay == true && !enSalto) {//ESTE IF NO PERTENECE A ESTA FUNCION
@@ -456,10 +460,23 @@ public class Board extends JPanel implements ActionListener {
                 return colisionoBoolean;
     }
     
+    public void colisionConBloqueCaida(){
+        if(personajeColision.intersects(this.colisionBloqueLargoCaida.getColisionBloque())){
+            personaje.setPosicionX(0);
+            personaje.setPosicionY(unidadMapaGrande);
+            perdidaDeVida();
+            this.sonidos.caida.reproducir();
+            terminoJuego();
+        }
+    }
+    
     public boolean colisionoConCofres(boolean colisionoBoolean){
-        for(ColisionBloqueLargo cofre:colisionCofres){
+        for(Cofre cofre:colisionCofres){
             if(personajeColision.intersects(cofre.getColisionBloque())){
                 colisionoBoolean=true;
+                this.score += 100;
+//                System.out.println("cofre position Y "+cofre.getPosYMatriz()+" posx "+cofre.getPosXMatriz());
+                mapa[cofre.getPosYMatriz()][cofre.getPosXMatriz()][1][2] = 0;
             }
         }
         return colisionoBoolean;
@@ -467,6 +484,7 @@ public class Board extends JPanel implements ActionListener {
     
     @Override
     public void paintComponent(Graphics g) {
+//        System.out.println("Nickname: "+this.nickName);
 //        System.out.println("PressD "+pressD+" PressA "+pressA);
 //        System.out.println("Timepo delay = "+tiempoDelay);
 //        System.out.println("PressD="+pressD);
@@ -475,8 +493,10 @@ public class Board extends JPanel implements ActionListener {
         boolean colisionoBoolean;
         super.paintComponent(g);
         g.setColor(Color.BLUE);
-        mapa1(g);//Crear el mapa, se encarga de pintarlo
-        if (contadorDelaysSalto >= velocidadDelaySalto) {
+        pintarMapa(g);//Crear el mapa, se encarga de pintarlo
+        moverPj(g, true);
+//        System.out.println("Contador delay salto "+contadorDelaysSalto+" velocidadDelaySalto "+velocidadDelaySalto);
+        if (true) {
             if (enSalto) {//Salto
 //                if(firstTimeEnSalto){firstTimeEnSalto=false;}
                 if(!sonidos.salto.reproducido){sonidos.reproducirSalto();}
@@ -543,7 +563,7 @@ public class Board extends JPanel implements ActionListener {
 //            moverPj(g,true);//BORRAR
         }else{contadorDelaysSalto++;};
         
-        if(contadorDelays>=velocidadDelay){
+        if(true){
             if (pressS == true) {
                 colisionoBoolean = false;
                 colisionoBoolean = colisionoBajando(colisionoBoolean);
@@ -617,13 +637,13 @@ public class Board extends JPanel implements ActionListener {
             contadorDelays = 0;
         } else {contadorDelays++;};
         
-        moverPj(g, true);
         if(colisionoConCofres(false)){
-           // System.out.println("Colisiono");
+            System.out.println("Colisiono");
         };
         pintarEnemigo(g);
         colisionConBloqueCaida();
         
+        drawScore(g);
         drawVida(g);
     }
     
@@ -631,47 +651,27 @@ public class Board extends JPanel implements ActionListener {
         if(!sonidos.caminar.reproducido && !enSalto){sonidos.reproducirCaminar();}
     }
     
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        repaint();
+    public void drawScore(Graphics g){
+//        g.drawImage(loadImage("fondoTexto.png"), 13*unidadMapaGrande, 0, this);
+        g.drawImage(loadImage("fondoTexto.png"), 13*unidadMapaGrande-5*scale, 4*scale, 17*unidadMapaGrande-5*scale, unidadMapaGrande+4*scale,
+                0, 0, 128, 32,this);
+        g.setColor(Color.WHITE);
+        g.setFont(new java.awt.Font("Franklin Gothic Medium", 0, 48));
+        g.drawString("Score: "+score, 13*unidadMapaGrande, unidadMapaGrande);
     }
     
-    public Image loadImage(String imageName){
-        ImageIcon ii = new ImageIcon(imageName);
-        Image image = ii.getImage();
-        return image;
-    };
-    
-    public void colisionConBloqueCaida(){
-        if(personajeColision.intersects(this.colisionBloqueLargoCaida.getColisionBloque())){
-            personaje.setPosicionX(0);
-            personaje.setPosicionY(unidadMapaGrande);
-            perdidaDeVida();
-            this.sonidos.caida.reproducir();
-            terminoJuego();
+    public void guardarScore(Graphics g){
+        try{
+         
+//        TextWriter texto;
+//        score.
+        }catch(Exception e){
+            System.out.println("Error al guardar el score");
         }
+        
     }
     
-    public void perdidaDeVida(){
-        this.personaje.disminuirVida();
-        this.sonidos.perdidaDeVida.reproducir();
-        animacionPerdidaVida();
-    }
-    
-    public void animacionPerdidaVida(){
-        Thread animacion = new Thread(new Animacion(100,this.personaje.getPosicionesDeImgAnimacionVidaPerdida(),personaje));
-        animacion.start();
-    }
-    
-    public void terminoJuego(){
-        if(this.personaje.getVidas()==0){
-          System.exit(0);
-          Iniciar in=new Iniciar();
-          in.show();
-        }
-    }
-    
-    public  void drawVida(Graphics g){   
+    public void drawVida(Graphics g){   
         g.drawImage(personaje.getVidaImage(),0, 0, personaje.getAnchoImgVida()*scale, personaje.getAltoImgVida()*scale,
         this.personaje.getPosXImgVidaPaint(), this.personaje.getPosYImgVidaPaint(), this.personaje.getPosXImgVidaPaint()+personaje.getAnchoImgVida(), this.personaje.getPosYImgVidaPaint()+this.personaje.getAltoImgVida(),this);
 //        System.out.println(this.personaje.getPosXImgVidaPaint()+","+this.personaje.getPosYImgVidaPaint());
@@ -681,7 +681,7 @@ public class Board extends JPanel implements ActionListener {
 //        g.drawImage(this.personaje.getVidaImage(), unidadMapaGrande, unidadMapaGrande, this.personaje.getAnchoImgVida(), this.personaje.getAltoImgVida(), this);
     }
     
-    public void mapa1(Graphics g){
+    public void pintarMapa(Graphics g){
         colisionMovX.clear();
         colisionMovY.clear();
         colisionMovXY.clear();
@@ -714,8 +714,43 @@ public class Board extends JPanel implements ActionListener {
 //        g.drawRect(18*unidadMapaGrande+posInicioCreacionMapa, 0, unidadMapaGrande, 8*unidadMapaGrande);//Barra finañ
     }
     
-    public void agregarColision(int agregarColision, int x, int y, int scale, Graphics g,int moverMapa) {
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        repaint();
+    }
+    
+    public Image loadImage(String imageName){
+        ImageIcon ii = new ImageIcon(imageName);
+        Image image = ii.getImage();
+        return image;
+    };
+    
+    public void perdidaDeVida(){
+        this.personaje.disminuirVida();
+        this.sonidos.perdidaDeVida.reproducir();
+        this.terminoJuego();
+        animacionPerdidaVida();
+    }
+    
+    public void animacionPerdidaVida(){
+        Thread animacion = new Thread(new Animacion(100,this.personaje.getPosicionesDeImgAnimacionVidaPerdida(),personaje));
+        animacion.start();
+    }
+    
+    public void tiempoInmune(){
         
+    }
+    
+    public void terminoJuego(){
+        System.out.println("Aa");
+        if(this.personaje.getVidas()==0){
+           Iniciar in =  new Iniciar();
+           in.show();
+           System.exit(0);
+        }
+    }
+    
+    public void agregarColision(int agregarColision, int x, int y, int scale, Graphics g,int moverMapa) {
         switch (agregarColision) {
             case 1:
                 this.colisionMovY.add(new MapaColision(x, y, this.scale, g, "y",moverMapa));
@@ -727,7 +762,8 @@ public class Board extends JPanel implements ActionListener {
                 this.colisionMovXY.add(new MapaColision(x, y, this.scale, g, "xy",moverMapa));
                 break;
             case 4:
-                this.colisionCofres.add(new ColisionBloqueLargo(x*unidadMapaGrande+moverMapa+1*scale,y*unidadMapaGrande+3*scale,this.scale, g,unidadMapaGrande-2*scale,unidadMapaGrande-3*scale));
+//                System.out.println("x = "+x+" y= "+y);
+                this.colisionCofres.add(new Cofre(x*unidadMapaGrande+moverMapa+1*scale,y*unidadMapaGrande+3*scale,this.scale, g,unidadMapaGrande-2*scale,unidadMapaGrande-3*scale,x,y));
                 break;
         };
     };
@@ -759,10 +795,10 @@ public class Board extends JPanel implements ActionListener {
     }
     
     public void pintarEnemigo(Graphics g){
-//        System.out.println("Mover mapa "+ moverMapa+" posicion enemigo "+enemigo.posicionXInicio);
+//        System.out.println("Enemigo posicion "+this.enemigo.posicionXInicio);
         enemigo.posicionMovimiento = enemigo.posicionXInicio + enemigo.getCambioPosicionMovimientoX();
-        enemigo.posicionXInicio = enemigo.posicionXInicio-moverImgMapa*unidadMapaGrande+moverMapa;
-        g.drawImage(enemigo.getImagen(), enemigo.getCambioPosicionMovimientoX(), enemigo.getY(), 50, 50, this);
+        enemigo.posicionXInicio = enemigo.posicionXOriginal-moverImgMapa*unidadMapaGrande+moverMapa;
+        g.drawImage(enemigo.getImagen(), enemigo.posicionMovimiento, enemigo.getY(), 50, 50, this);
         Rectangle rect=new Rectangle(enemigo.posicionMovimiento, enemigo.getY(), 50, 50);
         g.drawRect(enemigo.posicionMovimiento, enemigo.getY(), 50, 50);
         if(this.personajeColision.intersects(rect)){

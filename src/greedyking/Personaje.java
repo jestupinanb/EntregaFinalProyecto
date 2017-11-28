@@ -119,8 +119,7 @@ public class Personaje {
     public void setNumImgVida(int numImgVida) {
         this.numImgVida = numImgVida;
     }
-    
-    
+      
     public int getNumImagen() {
         return numImagen;
     }

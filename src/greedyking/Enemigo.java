@@ -28,9 +28,11 @@ class Enemigo {
     private boolean derecha;
     private Thread movimiento = new Thread(new MovimientoEnemigo(this));
     public int posicionXInicio;
+    public int posicionXOriginal;
     public int posicionMovimiento;
     
     public Enemigo(int posicionInicioX,int posicionInicioY) throws IOException {
+        this.posicionXOriginal = posicionInicioX;
         this.posicionXInicio = posicionInicioX;
         this.y = posicionInicioY;
         imagenesderecha = new Image[4];
