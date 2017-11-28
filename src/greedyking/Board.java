@@ -15,10 +15,13 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
 import java.util.TimerTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.sound.sampled.FloatControl;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
@@ -75,7 +78,7 @@ public class Board extends JPanel implements ActionListener {
     
     //Mapa
     private int moverImgMapa = 0;//Dependiendo del numero que tenga mueve esa cantidad de columnas la matriz 
-    private int cuadroInicioMapa =-1;
+    private int cuadroInicioMapa =1;
     private int moverMapa = cuadroInicioMapa*unidadMapaGrande;
     int posInicioCreacionMapa = cuadroInicioMapa*unidadMapaGrande;
     
@@ -87,8 +90,15 @@ public class Board extends JPanel implements ActionListener {
     
     
     private int cuadroInicioMovMapaPersonaje = 8;
+    //Enemigos
+    private Enemigo enemigo;  
     
     public Board() {
+        try {
+            this.enemigo = new Enemigo(unidadMapaGrande*3,unidadMapaGrande);
+        } catch (IOException ex) {
+            System.out.println("Error con el enemigo");
+        }
         
         this.personaje = new Personaje(scale);
         timer = new Timer(this.delay,this);
@@ -603,6 +613,7 @@ public class Board extends JPanel implements ActionListener {
         if(colisionoConCofres(false)){
             System.out.println("Colisiono");
         };
+        pintarEnemigo(g);
         colisionConBloqueCaida();
         
         drawVida(g);
@@ -735,6 +746,21 @@ public class Board extends JPanel implements ActionListener {
 
     public int getScale() {//Retoruna el tamaño al que se aumenta el juego 1 = originial, 2 = al doble de grande, 3 = triple de grande etc...
         return scale;
+    }
+    
+    public void pintarEnemigo(Graphics g){
+//        System.out.println("Mover mapa "+ moverMapa+" posicion enemigo "+enemigo.posicionXInicio);
+        enemigo.posicionMovimiento = enemigo.posicionXInicio + enemigo.getCambioPosicionMovimientoX();
+        enemigo.posicionXInicio = enemigo.posicionXInicio-moverImgMapa*unidadMapaGrande+moverMapa;
+        g.drawImage(enemigo.getImagen(), enemigo.getCambioPosicionMovimientoX(), enemigo.getY(), 50, 50, this);
+        Rectangle rect=new Rectangle(enemigo.posicionMovimiento, enemigo.getY(), 50, 50);
+        g.drawRect(enemigo.posicionMovimiento, enemigo.getY(), 50, 50);
+        if(this.personajeColision.intersects(rect)){
+            perdidaDeVida();
+        }
+//       if(this.personaje.getPositionX()==enemigo.getX()&&this.personaje.getPositionY()==enemigo.getY()){
+//           this.perdidaDeVida();
+//       };
     }
     
 }
