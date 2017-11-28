@@ -32,6 +32,8 @@ import javax.swing.Timer;
  * @author Jaime
  */
 public class Board extends JPanel implements ActionListener {
+   private String Nickname;
+   
     private int scale = 4;//El tamaño al que se aumenta el juego 1 = originial, 2 = al doble de grande, 3 = triple de grande etc...
     private int unidadMapaOriginal = 16;//El tile del mapa esta dividido en cuadros de 16x16
     private int unidadMapaGrande = 16*scale;//Tamaño que va a terner el juego al ejecutarse
@@ -170,7 +172,9 @@ public class Board extends JPanel implements ActionListener {
         }
         
     }
-    
+    public String getNickname(){
+    return this.Nickname;
+    }
     public void otherKeyPressed(int key){
 //        System.out.println("Laskey "+KeyEvent.getKeyText(lastKeyPressed)+" key "+KeyEvent.getKeyText(key));
         if(lastKeyPressed!=key){
@@ -225,15 +229,17 @@ public class Board extends JPanel implements ActionListener {
                 for(int j=0; j<2; j++){
                     temporal = leer.nextInt();
                     mapa[k][i][j] = a.get(temporal);
-                    System.out.print(temporal+" ");
+                    //System.out.print(temporal+" ");
                 }
             }
             k++;
-            System.out.println("K="+k);
+           // System.out.println("K="+k);
         };
-        System.out.println("Termino");
+        //System.out.println("Termino");
     }
-    
+    public void SetNickname(String nombre){
+    this.Nickname=nombre;
+    }
     private class EventosTeclado extends KeyAdapter {
         boolean otherKeyPress;
         @Override
@@ -241,6 +247,7 @@ public class Board extends JPanel implements ActionListener {
 //            pressS = false;pressW=false;pressA=false;pressD=false;
             int key = e.getKeyCode();
 //            System.out.println("Ultima tecla presionada "+KeyEvent.getKeyText(key));
+
             switch (key){
                 case KeyEvent.VK_D:
 //                    if(firstTimeD){firstTimeD = true;};
@@ -310,8 +317,8 @@ public class Board extends JPanel implements ActionListener {
                     break;
                 case KeyEvent.VK_LEFT:
                     if(moverImgMapa>0){
-                    System.out.println("MOVE LEFT MoverImgMapa--");
-                    moverImgMapa--;}else{System.out.println("Distancia minima");}
+                   // System.out.println("MOVE LEFT MoverImgMapa--");
+                    moverImgMapa--;}else{/*System.out.println("Distancia minima");*/}
                     break;
                 case KeyEvent.VK_E:
                     sonidos.musicaFondo.stop();
@@ -611,7 +618,7 @@ public class Board extends JPanel implements ActionListener {
         
         moverPj(g, true);
         if(colisionoConCofres(false)){
-            System.out.println("Colisiono");
+           // System.out.println("Colisiono");
         };
         pintarEnemigo(g);
         colisionConBloqueCaida();

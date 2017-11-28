@@ -32,9 +32,9 @@ public class MovimientoEnemigo implements Runnable {
             for (int i = 0; i < 100; i++) {
                 this.enemigo.Aumentarderecha();
 //                enemigo.setX(x+4);
-                System.out.println("Posicion enemigo 1 "+this.enemigo.cambioMovimientoX);
+                //System.out.println("Posicion enemigo 1 "+this.enemigo.cambioMovimientoX);
 //                this.enemigo.cambioMovimientoX = this.enemigo.cambioMovimientoX + 4;
-                System.out.println("Posicion enemigo 2 "+this.enemigo.cambioMovimientoX);
+                //System.out.println("Posicion enemigo 2 "+this.enemigo.cambioMovimientoX);
                 try {
                     Thread.sleep(40);
                 } catch (InterruptedException ex) {
@@ -65,9 +65,9 @@ public class MovimientoEnemigo implements Runnable {
             for (int m = 0; m < 100; m++) {
                 y = this.enemigo.getY();
                 this.enemigo.AumentarIzquierda();
-                System.out.println("Posicion enemigo 1 "+this.enemigo.cambioMovimientoX);
+               // System.out.println("Posicion enemigo 1 "+this.enemigo.cambioMovimientoX);
 //                this.enemigo.cambioMovimientoX = this.enemigo.cambioMovimientoX - 4;
-                System.out.println("Posicion enemigo 2 "+this.enemigo.cambioMovimientoX);
+               // System.out.println("Posicion enemigo 2 "+this.enemigo.cambioMovimientoX);
                 try {
                     Thread.sleep(40);
                 } catch (InterruptedException ex) {
