@@ -5,6 +5,7 @@
  */
 package greedyking;
 
+import Vista.Iniciar;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -664,7 +665,9 @@ public class Board extends JPanel implements ActionListener {
     
     public void terminoJuego(){
         if(this.personaje.getVidas()==0){
-            System.out.println("Game Over");
+          System.exit(0);
+          Iniciar in=new Iniciar();
+          in.show();
         }
     }
     
