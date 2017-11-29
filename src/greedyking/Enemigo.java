@@ -19,38 +19,35 @@ class Enemigo {
     
     public int cambioMovimientoX;
     private int y;
-    private BufferedImage ImagenGeneral;
-    private BufferedImage ImagenGeneralI;
-    private Image[] imagenesderecha = new Image[4];
-    private Image[] imagenesizquierda = new Image[4];
-    private int indicederecha;
-    private int indiceizquierda;
+    private Image imagenGeneral;
     private boolean derecha;
     private Thread movimiento = new Thread(new MovimientoEnemigo(this));
     public int posicionXInicio;
     public int posicionXOriginal;
     public int posicionMovimiento;
+    int[][] posicionImgEnemigo;
+    private int numeroImg = 0;
+    private int ancho = 18;
+    private int alto = 16;
     
     public Enemigo(int posicionInicioX,int posicionInicioY) throws IOException {
+        this.posicionImgEnemigo = new int[][]{{0,112},{18,112}};
         this.posicionXOriginal = posicionInicioX;
         this.posicionXInicio = posicionInicioX;
         this.y = posicionInicioY;
-        imagenesderecha = new Image[4];
-        imagenesizquierda = new Image[4];
         this.derecha = true;
-        this.ImagenGeneralI = ImageIO.read(new File("charactersI.png"));
-        this.ImagenGeneral = ImageIO.read(new File("characters.png"));
-        for (int i = 0; i < 4; i++) {
-            this.imagenesderecha[i] = (BufferedImage) ImagenGeneral.getSubimage(i * 32, 64, 32, 32);
-        }
-        for (int i = 0; i < 3; i++) {
-            this.imagenesizquierda[i] = (BufferedImage) ImagenGeneralI.getSubimage((i + 5) * 32, 64, 32, 32);
-        }
+        this.imagenGeneral = ImageIO.read(new File("characters.png"));
         this.movimiento.start();
-        this.indicederecha = 0;
-        this.indiceizquierda = 0;
         posicionMovimiento = posicionXInicio+cambioMovimientoX;
         System.out.println("Se ejecuto constructor");
+    }
+
+    public int getAncho() {
+        return ancho;
+    }
+
+    public int getAlto() {
+        return alto;
     }
     
     public void iniciarHilo() {
@@ -65,44 +62,23 @@ class Enemigo {
         return y;
     }
 
-    public Image[] getImagenesderecha() {
-        return imagenesderecha;
-    }
-
-    public Image[] getImagenesizquierda() {
-        return imagenesizquierda;
-    }
-
-//    public void setX(int x) {
-//        this.cambioMovimientoX = x;
-//    }
-
     public void setY(int y) {
         this.y = y;
     }
-
-    public void Aumentarderecha() {
-        if (this.indicederecha < 3) {
-            this.indicederecha++;
+    
+    public int[] posicionImgEnemigo(){
+        if (this.derecha) {
+            return this.posicionImgEnemigo[numeroImg];
         } else {
-            this.indicederecha = 0;
-        }
-    }
-
-    public void AumentarIzquierda() {
-        if (this.indiceizquierda < 3) {
-            this.indiceizquierda++;
-        } else {
-            this.indiceizquierda = 0;
+            return this.posicionImgEnemigo[numeroImg];
         }
     }
 
     public Image getImagen() {
         if (this.derecha) {
-            return this.imagenesderecha[this.indicederecha];
+            return this.imagenGeneral;
         } else {
-            return this.imagenesizquierda[this.indiceizquierda];
-
+            return this.imagenGeneral;
         }
     }
 

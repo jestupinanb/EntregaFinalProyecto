@@ -29,8 +29,8 @@ public class MovimientoEnemigo implements Runnable {
     public void run() {
         int y;
         while (true) {
-            for (int i = 0; i < 100; i++) {
-                this.enemigo.Aumentarderecha();
+            for (int i = 0; i < 50; i++) {
+//                this.enemigo.Aumentarderecha();
 //                enemigo.setX(x+4);
 //                System.out.println("Posicion enemigo 1 "+this.enemigo.cambioMovimientoX);
                 this.enemigo.cambioMovimientoX = this.enemigo.cambioMovimientoX + 4;
@@ -40,11 +40,10 @@ public class MovimientoEnemigo implements Runnable {
                 } catch (InterruptedException ex) {
                     Logger.getLogger(MovimientoEnemigo.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                if (i == 100) {
+                if (i == 50) {
                     for (int n = 0; n < 3; n++) {
                         y = this.enemigo.getY();
                         this.enemigo.setY(y - 1);
-                        
                         try {
                             Thread.sleep(40);
                         } catch (InterruptedException ex) {
@@ -55,16 +54,16 @@ public class MovimientoEnemigo implements Runnable {
                         y = this.enemigo.getY();
                         this.enemigo.setY(y + 1);
                     }
-                    this.enemigo.Aumentarderecha();
+//                    this.enemigo.Aumentarderecha();
 
                     break;
 
                 }
             }
             this.enemigo.cambiardedireccion();
-            for (int m = 0; m < 100; m++) {
+            for (int m = 0; m < 50; m++) {
                 y = this.enemigo.getY();
-                this.enemigo.AumentarIzquierda();
+//                this.enemigo.AumentarIzquierda();
 //                System.out.println("Posicion enemigo 1 "+this.enemigo.cambioMovimientoX);
                 this.enemigo.cambioMovimientoX = this.enemigo.cambioMovimientoX - 4;
 //                System.out.println("Posicion enemigo 2 "+this.enemigo.cambioMovimientoX);
@@ -73,7 +72,7 @@ public class MovimientoEnemigo implements Runnable {
                 } catch (InterruptedException ex) {
                     Logger.getLogger(MovimientoEnemigo.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                if (m == 100) {
+                if (m == 50) {
                     for (int n = 0; n < 3; n++) {
                         y = this.enemigo.getY();
                         this.enemigo.setY(y - 1);
@@ -87,7 +86,7 @@ public class MovimientoEnemigo implements Runnable {
                         y = this.enemigo.getY();
                         this.enemigo.setY(y + 1);
                     }
-                    this.enemigo.Aumentarderecha();
+//                    this.enemigo.Aumentarderecha();
 
                     break;
 

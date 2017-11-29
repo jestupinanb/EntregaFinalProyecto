@@ -242,7 +242,10 @@ public class Board extends JPanel implements ActionListener {
     }
     
     public void leerMapa() throws FileNotFoundException{
+        System.out.println("Se leyooo");
         ArrayList<int[]> a = tiles;
+//        int numero = a.get(98)[0];
+         System.out.println("101 = "+a.get(98)[0]+" "+a.get(98)[1]+" "+a.get(98)[2]);
         int k=0;
 //        int temporal;
         Scanner leer = new Scanner(new File("mapa.txt"));
@@ -250,7 +253,8 @@ public class Board extends JPanel implements ActionListener {
             for (int i = 0; i < largoMapa; i++) {
                 for(int j=0; j<2; j++){
                     temporal = leer.nextInt();
-                    mapa[k][i][j] = a.get(temporal);
+                    int[] arrayTemp = {a.get(temporal)[0],a.get(temporal)[1],a.get(temporal)[2]};
+                    mapa[k][i][j] = arrayTemp;
                     System.out.print(temporal+" ");
                 }
             }
@@ -345,6 +349,9 @@ public class Board extends JPanel implements ActionListener {
                     break;
                 case KeyEvent.VK_Q:
                     perdidaDeVida();
+                    break;
+                case KeyEvent.VK_F:
+                    System.out.println("Cantidad de cofres "+colisionCofres.size());
                     break;
             }
         }
@@ -490,8 +497,10 @@ public class Board extends JPanel implements ActionListener {
                 colisionoBoolean=true;
                 this.score += 100;
                 System.out.println("DESTURYO COFRE");
-//                System.out.println("cofre position Y "+cofre.getPosYMatriz()+" posx "+cofre.getPosXMatriz());
+                System.out.println("cofre position Y "+cofre.getPosYMatriz()+" posx "+cofre.getPosXMatriz());
+                System.out.println("Cofre "+tiles.get(101)[2]);
                 mapa[cofre.getPosYMatriz()][cofre.getPosXMatriz()][1][2] = 0;
+                System.out.println("Cofre "+tiles.get(101)[2]);
             }
         }
         return colisionoBoolean;
@@ -705,9 +714,7 @@ public class Board extends JPanel implements ActionListener {
         for(int posY=0;posY<8;posY++){
             for (int posX=0; posX<19; posX++) {//Largo
                 if(mapa[posY][posX+moverImgMapa][0][0]!=-1){//En caso de que haya fondo se ejecuta
-                //Dibuja el fondo de la imagen g.drawImage(Imagen que va, posicion en pixeles de la columna donde empieza, posicion en pixeles de la fila donde empieza, posicion en pixeles de la columna donde termina, posicion en pixeles de la fila donde termina,
-                //Esta parte se encarga de recotar la imagen original... posicion de la columna, posicion de la fila, posicion final de la columna,posicion final de la fila, this)
-                
+                    
                 g.drawImage(fondo,posX*unidadMapaGrande+moverMapa,posY*unidadMapaGrande,posX*unidadMapaGrande+unidadMapaGrande+moverMapa,posY*unidadMapaGrande+unidadMapaGrande,
                 mapa[posY][posX+moverImgMapa][0][0]*unidadMapaOriginal,mapa[posY][posX+moverImgMapa][0][1]*unidadMapaOriginal,mapa[posY][posX+moverImgMapa][0][0]*unidadMapaOriginal+16,mapa[posY][posX+moverImgMapa][0][1]*unidadMapaOriginal+16, this);
                 };
@@ -792,8 +799,10 @@ public class Board extends JPanel implements ActionListener {
                 this.colisionMovXY.add(new MapaColision(x, y, this.scale, g, "xy",moverMapa));
                 break;
             case 4:
-                System.out.println("x = "+x+" y= "+y);
-                this.colisionCofres.add(new Cofre(x*unidadMapaGrande+moverMapa+1*scale,y*unidadMapaGrande+3*scale,this.scale, g,unidadMapaGrande-2*scale,unidadMapaGrande-3*scale,x,y));
+//                System.out.println("x = "+(x+this.moverImgMapa)+" y = "+y);
+//                System.out.println("X= "+x+" move img mapa "+this.moverImgMapa);
+//                System.out.println("Deberia ser: "+(x+this.moverImgMapa));
+                this.colisionCofres.add(new Cofre(x*unidadMapaGrande+moverMapa+1*scale,y*unidadMapaGrande+3*scale,this.scale, g,unidadMapaGrande-2*scale,unidadMapaGrande-3*scale,x+this.moverImgMapa,y));
                 break;
         };
     };
@@ -829,6 +838,8 @@ public class Board extends JPanel implements ActionListener {
         enemigo.posicionMovimiento = enemigo.posicionXInicio + enemigo.getCambioPosicionMovimientoX();
         enemigo.posicionXInicio = enemigo.posicionXOriginal-moverImgMapa*unidadMapaGrande+moverMapa;
         g.drawImage(enemigo.getImagen(), enemigo.posicionMovimiento, enemigo.getY(), 50, 50, this);
+        g.drawImage(enemigo.getImagen(), enemigo.posicionMovimiento, enemigo.getY(), enemigo.getAncho(), enemigo.getAlto(), 
+                WIDTH, WIDTH, WIDTH, WIDTH, this)
         Rectangle rect=new Rectangle(enemigo.posicionMovimiento, enemigo.getY(), 50, 50);
 //        g.drawRect(enemigo.posicionMovimiento, enemigo.getY(), 50, 50);
         if(this.personajeColision.intersects(rect)){
