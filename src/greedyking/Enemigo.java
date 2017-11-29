@@ -25,13 +25,14 @@ class Enemigo {
     public int posicionXInicio;
     public int posicionXOriginal;
     public int posicionMovimiento;
-    int[][] posicionImgEnemigo;
-    private int numeroImg = 0;
-    private int ancho = 18;
+    int[] posicionImgEnemigoDerecha = {0,112};
+    int[] posicionImgEnemigoIzquierda = {18,112};
+    private int numImg = 0;
+    private int ancho = 16;
     private int alto = 16;
     
-    public Enemigo(int posicionInicioX,int posicionInicioY) throws IOException {
-        this.posicionImgEnemigo = new int[][]{{0,112},{18,112}};
+    public Enemigo(int posicionInicioX,int posicionInicioY,int scale) throws IOException {
+//        this.posicionImgEnemigo = new int[][]{{0,112},{18,112}};
         this.posicionXOriginal = posicionInicioX;
         this.posicionXInicio = posicionInicioX;
         this.y = posicionInicioY;
@@ -39,9 +40,9 @@ class Enemigo {
         this.imagenGeneral = ImageIO.read(new File("characters.png"));
         this.movimiento.start();
         posicionMovimiento = posicionXInicio+cambioMovimientoX;
-        System.out.println("Se ejecuto constructor");
+//        System.out.println("Se ejecuto constructor");
     }
-
+    
     public int getAncho() {
         return ancho;
     }
@@ -57,7 +58,9 @@ class Enemigo {
     public int getCambioPosicionMovimientoX() {
         return cambioMovimientoX;
     }
-
+    
+    
+    
     public int getY() {
         return y;
     }
@@ -66,12 +69,16 @@ class Enemigo {
         this.y = y;
     }
     
-    public int[] posicionImgEnemigo(){
-        if (this.derecha) {
-            return this.posicionImgEnemigo[numeroImg];
-        } else {
-            return this.posicionImgEnemigo[numeroImg];
+    public int posImgX(){
+        if(this.derecha){
+            return this.posicionImgEnemigoDerecha[0];
+        }else{
+            return this.posicionImgEnemigoDerecha[0]+ancho;
         }
+    }
+    
+    public int posImgY(){
+        return this.posicionImgEnemigoDerecha[1];
     }
 
     public Image getImagen() {

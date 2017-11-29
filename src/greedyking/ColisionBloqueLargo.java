@@ -5,6 +5,7 @@
  */
 package greedyking;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 
@@ -30,7 +31,9 @@ public class ColisionBloqueLargo extends MapaPadre{
     private void makeCollision(){
         this.ColisionBloque = new
         Rectangle(posicionX, posicionY, posicionXFinal, posicionYFinal);
-//        g.drawRect(ColisionBloque.x, ColisionBloque.y, ColisionBloque.width, ColisionBloque.height);
+        g.setColor(Color.BLACK);
+        g.drawRect(ColisionBloque.x, ColisionBloque.y, ColisionBloque.width, ColisionBloque.height);
+        g.setColor(Color.BLUE);
 //        System.out.println(posicionX+","+posicionY+","+posicionXFinal+","+posicionYFinal);
 //        g.drawRect(0*unidadMapaGrande, 8*unidadMapaGrande, 18*unidadMapaGrande, 1*unidadMapaGrande);
     };

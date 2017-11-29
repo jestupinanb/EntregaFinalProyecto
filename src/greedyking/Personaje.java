@@ -259,4 +259,9 @@ public class Personaje {
     public boolean isNoPermitirCambioImgMovimiento() {
         return noPermitirCambioImgMovimiento;
     }
+
+    public void setVidas(int vidas) {
+        this.vidas = vidas;
+    }
+    
 };
