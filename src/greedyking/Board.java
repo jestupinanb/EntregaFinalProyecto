@@ -104,8 +104,8 @@ public class Board extends JPanel implements ActionListener {
     private int cuadroInicioMovMapaPersonaje = 8;
     
     //Enemigos
-    private Enemigo enemigo;
-//    private ArrayList<Enemigo> enemigos = new ArrayList();
+//    private Enemigo enemigo;
+    private ArrayList<Enemigo> enemigos = new ArrayList();
     
     //Score
     private int score = 0;
@@ -120,22 +120,22 @@ public class Board extends JPanel implements ActionListener {
     private int nivel = 0;
     private ColisionBloqueLargo finalNivel;
     
-//    public void crearEnemigo(int x,int y){
-//        try {
-//            this.enemigos.add(new Enemigo(unidadMapaGrande*x,unidadMapaGrande*y,this.scale));
-//        } catch (IOException ex) {
-//            System.out.println("Error con el enemigo");
-//        }
-//    }
-    
-    public Board(JFrame jframe) {
-        this.jframe = jframe;
+    public void crearEnemigo(int x,int y){
         try {
-            this.enemigo = new Enemigo(unidadMapaGrande*5,unidadMapaGrande*4,this.scale);
+            this.enemigos.add(new Enemigo(unidadMapaGrande*x,unidadMapaGrande*y,this.scale));
         } catch (IOException ex) {
             System.out.println("Error con el enemigo");
         }
-//        niveles();
+    }
+    
+    public Board(JFrame jframe) {
+        this.jframe = jframe;
+//        try {
+//            this.enemigo = new Enemigo(unidadMapaGrande*5,unidadMapaGrande*4,this.scale);
+//        } catch (IOException ex) {
+//            System.out.println("Error con el enemigo");
+//        }
+        niveles();
         this.nickName = nickName;
         this.personaje = new Personaje(scale);
         timer = new Timer(this.delay,this);
@@ -210,25 +210,25 @@ public class Board extends JPanel implements ActionListener {
         }
     }
     
-//    public void niveles(){
-//        switch (nivel) {
-//            case 0:
-//                crearEnemigo(5,4);
-//                crearEnemigo(31,5);
-//                nivel=1;
-//                break;
-//            case 1:
-//                nivel=2;
-//                break;
-//            case 2:
-//                nivel=3;
-//                break;
-//            default:
-//                personaje.setVidas(0);
-//                terminoJuego();
-//                break;
-//        }
-//    }
+    public void niveles(){
+        switch (nivel) {
+            case 0:
+                crearEnemigo(5,4);
+                crearEnemigo(31,5);
+                nivel=1;
+                break;
+            case 1:
+                nivel=2;
+                break;
+            case 2:
+                nivel=3;
+                break;
+            default:
+                personaje.setVidas(0);
+                terminoJuego();
+                break;
+        }
+    }
     
     public void otherKeyPressed(int key){
 //        System.out.println("Laskey "+KeyEvent.getKeyText(lastKeyPressed)+" key "+KeyEvent.getKeyText(key));
@@ -377,15 +377,15 @@ public class Board extends JPanel implements ActionListener {
 //                    moverImgMapa--;}else{System.out.println("Distancia minima");}
                     break;
                 case KeyEvent.VK_E:
-//                    sonidos.musicaFondo.stop();
-//                    sonidos.musicaFondo.reproducir();
+                    sonidos.musicaFondo.stop();
+                    sonidos.musicaFondo.reproducir();
                     break;
                 case KeyEvent.VK_Q:
-//                    perdidaDeVida();
+                    perdidaDeVida();
                     break;
                 case KeyEvent.VK_F:
 //                    System.out.println("Cantidad de cofres "+colisionCofres.size());
-//                    System.out.println("Posicion personaje: "+(cuadroInicioMovMapaPersonaje+moverImgMapa));
+                    System.out.println("Posicion personaje: "+(cuadroInicioMovMapaPersonaje+moverImgMapa));
                     break;
             }
         }
@@ -548,12 +548,6 @@ public class Board extends JPanel implements ActionListener {
     
     @Override
     public void paintComponent(Graphics g) {
-//        System.out.println("Nickname: "+this.nickName);
-//        System.out.println("PressD "+pressD+" PressA "+pressA);
-//        System.out.println("Timepo delay = "+tiempoDelay);
-//        System.out.println("PressD="+pressD);
-//        System.out.println("enSalto="+enSalto);
-//        System.out.println("ContadorDelays="+contadorDelays);
         boolean colisionoBoolean;
         super.paintComponent(g);
         g.setColor(Color.BLUE);
@@ -738,11 +732,6 @@ public class Board extends JPanel implements ActionListener {
     public void drawVida(Graphics g){   
         g.drawImage(personaje.getVidaImage(),0, 0, personaje.getAnchoImgVida()*scale, personaje.getAltoImgVida()*scale,
         this.personaje.getPosXImgVidaPaint(), this.personaje.getPosYImgVidaPaint(), this.personaje.getPosXImgVidaPaint()+personaje.getAnchoImgVida(), this.personaje.getPosYImgVidaPaint()+this.personaje.getAltoImgVida(),this);
-//        System.out.println(this.personaje.getPosXImgVidaPaint()+","+this.personaje.getPosYImgVidaPaint());
-//        System.out.println(personaje.getPosXImgVidaPaint()+","+personaje.getPosYImgVidaPaint()+","+(this.personaje.getPosXImgVidaPaint()+personaje.getAnchoImgVida())+","+(this.personaje.getPosYImgVidaPaint()+this.personaje.getAltoImgVida()));
-//        g.drawRect(0, 0, this.personaje.getAnchoImgVida()*scale, this.personaje.getAltoImgVida()*scale);
-//        g.drawImage(this.personaje.getVidaImage(), 0, 0, this);
-//        g.drawImage(this.personaje.getVidaImage(), unidadMapaGrande, unidadMapaGrande, this.personaje.getAnchoImgVida(), this.personaje.getAltoImgVida(), this);
     }
     
     public void drawMapa(Graphics g){
@@ -754,8 +743,6 @@ public class Board extends JPanel implements ActionListener {
         for(int posY=0;posY<8;posY++){
             for (int posX=0; posX<19; posX++) {//Largo
                 if(mapa[posY][posX+moverImgMapa][0][0]!=-1){//En caso de que haya fondo se ejecuta
-                //Dibuja el fondo de la imagen g.drawImage(Imagen que va, posicion en pixeles de la columna donde empieza, posicion en pixeles de la fila donde empieza, posicion en pixeles de la columna donde termina, posicion en pixeles de la fila donde termina,
-                //Esta parte se encarga de recotar la imagen original... posicion de la columna, posicion de la fila, posicion final de la columna,posicion final de la fila, this)
                 g.drawImage(fondo,posX*unidadMapaGrande+moverMapa,posY*unidadMapaGrande,posX*unidadMapaGrande+unidadMapaGrande+moverMapa,posY*unidadMapaGrande+unidadMapaGrande,
                 mapa[posY][posX+moverImgMapa][0][0]*unidadMapaOriginal,mapa[posY][posX+moverImgMapa][0][1]*unidadMapaOriginal,mapa[posY][posX+moverImgMapa][0][0]*unidadMapaOriginal+16,mapa[posY][posX+moverImgMapa][0][1]*unidadMapaOriginal+16, this);
                 };
@@ -840,15 +827,8 @@ public class Board extends JPanel implements ActionListener {
                 this.colisionMovXY.add(new MapaColision(x, y, this.scale, g, "xy",moverMapa));
                 break;
             case 4:
-//                System.out.println("x = "+(x+this.moverImgMapa)+" y = "+y);
-//                System.out.println("X= "+x+" move img mapa "+this.moverImgMapa);
-//                System.out.println("Deberia ser: "+(x+this.moverImgMapa));
                 this.colisionCofres.add(new Cofre(x*unidadMapaGrande+moverMapa+1*scale,y*unidadMapaGrande+3*scale,this.scale, g,unidadMapaGrande-2*scale,unidadMapaGrande-3*scale,x+this.moverImgMapa,y));
                 break;
-//            case 5:
-//                System.out.println("Se creo "+x*unidadMapaGrande+" "+y*unidadMapaGrande);
-//                this.finalNivel = new ColisionBloqueLargo(x*unidadMapaGrande,y*unidadMapaGrande,scale, g, x*unidadMapaGrande+unidadMapaGrande, y*unidadMapaGrande+unidadMapaGrande);
-//                break;
         };
     };
     
@@ -879,31 +859,31 @@ public class Board extends JPanel implements ActionListener {
     }
     
     public void pintarEnemigo(Graphics g){
-//        for (Enemigo enemigo : enemigos) {
-////                    System.out.println("Enemigo posicion "+enemigo.posicionXInicio);
-//            enemigo.posicionMovimiento = enemigo.posicionXInicio + enemigo.getCambioPosicionMovimientoX();
-//            enemigo.posicionXInicio = enemigo.posicionXOriginal - moverImgMapa * unidadMapaGrande + moverMapa;
-////        g.drawImage(enemigo.getImagen(), enemigo.posicionMovimiento, enemigo.getY(), 50, 50, this);
-////        System.out.println("Ancho "+enemigo.posImgX()+" "+enemigo.posImgX()+enemigo.getAncho());
-//            g.drawImage(enemigo.getImagen(), enemigo.posicionMovimiento, enemigo.getY(), enemigo.posicionMovimiento + enemigo.getAncho() * scale, enemigo.getY() + enemigo.getAlto() * scale,
-//                    enemigo.posImgX(), enemigo.posImgY(), enemigo.posImgX() + enemigo.getAncho(), enemigo.posImgY() + enemigo.getAlto(), this);
-//            Rectangle rect = new Rectangle(enemigo.posicionMovimiento + 5 * scale, enemigo.getY() + 7 * scale, enemigo.getAncho() * scale - 7 * scale, enemigo.getAlto() * scale - 7 * scale);
-//            g.drawRect(rect.x, rect.y, rect.width, rect.height);
-//            if (this.personajeColision.intersects(rect)) {
-//                perdidaDeVida();
-//            }
-//        }
-                    enemigo.posicionMovimiento = enemigo.posicionXInicio + enemigo.getCambioPosicionMovimientoX();
+        for (Enemigo enemigo : enemigos) {
+//                    System.out.println("Enemigo posicion "+enemigo.posicionXInicio);
+            enemigo.posicionMovimiento = enemigo.posicionXInicio + enemigo.getCambioPosicionMovimientoX();
             enemigo.posicionXInicio = enemigo.posicionXOriginal - moverImgMapa * unidadMapaGrande + moverMapa;
 //        g.drawImage(enemigo.getImagen(), enemigo.posicionMovimiento, enemigo.getY(), 50, 50, this);
 //        System.out.println("Ancho "+enemigo.posImgX()+" "+enemigo.posImgX()+enemigo.getAncho());
             g.drawImage(enemigo.getImagen(), enemigo.posicionMovimiento, enemigo.getY(), enemigo.posicionMovimiento + enemigo.getAncho() * scale, enemigo.getY() + enemigo.getAlto() * scale,
                     enemigo.posImgX(), enemigo.posImgY(), enemigo.posImgX() + enemigo.getAncho(), enemigo.posImgY() + enemigo.getAlto(), this);
             Rectangle rect = new Rectangle(enemigo.posicionMovimiento + 5 * scale, enemigo.getY() + 7 * scale, enemigo.getAncho() * scale - 7 * scale, enemigo.getAlto() * scale - 7 * scale);
-//            g.drawRect(rect.x, rect.y, rect.width, rect.height);
+            g.drawRect(rect.x, rect.y, rect.width, rect.height);
             if (this.personajeColision.intersects(rect)) {
                 perdidaDeVida();
             }
+        }
+//                    enemigo.posicionMovimiento = enemigo.posicionXInicio + enemigo.getCambioPosicionMovimientoX();
+//            enemigo.posicionXInicio = enemigo.posicionXOriginal - moverImgMapa * unidadMapaGrande + moverMapa;
+////        g.drawImage(enemigo.getImagen(), enemigo.posicionMovimiento, enemigo.getY(), 50, 50, this);
+////        System.out.println("Ancho "+enemigo.posImgX()+" "+enemigo.posImgX()+enemigo.getAncho());
+//            g.drawImage(enemigo.getImagen(), enemigo.posicionMovimiento, enemigo.getY(), enemigo.posicionMovimiento + enemigo.getAncho() * scale, enemigo.getY() + enemigo.getAlto() * scale,
+//                    enemigo.posImgX(), enemigo.posImgY(), enemigo.posImgX() + enemigo.getAncho(), enemigo.posImgY() + enemigo.getAlto(), this);
+//            Rectangle rect = new Rectangle(enemigo.posicionMovimiento + 5 * scale, enemigo.getY() + 7 * scale, enemigo.getAncho() * scale - 7 * scale, enemigo.getAlto() * scale - 7 * scale);
+////            g.drawRect(rect.x, rect.y, rect.width, rect.height);
+//            if (this.personajeColision.intersects(rect)) {
+//                perdidaDeVida();
+//            }
 //       if(this.personaje.getPositionX()==enemigo.getX()&&this.personaje.getPositionY()==enemigo.getY()){
 //           this.perdidaDeVida();
 //       };
