@@ -46,7 +46,7 @@ public class Board extends JPanel implements ActionListener {
     private int scale = 4;//El tamaño al que se aumenta el juego 1 = originial, 2 = al doble de grande, 3 = triple de grande etc...
     private int unidadMapaOriginal = 16;//El tile del mapa esta dividido en cuadros de 16x16
     private int unidadMapaGrande = 16*scale;//Tamaño que va a terner el juego al ejecutarse
-    private int delay = 16;
+    private int delay = 15;
     Personaje personaje;//Crear un personaje
     private Timer timer;
     Rectangle personajeColision;
@@ -767,7 +767,7 @@ public class Board extends JPanel implements ActionListener {
             };
         };
         //bloque de caida
-        this.colisionBloqueLargoCaida = new ColisionBloqueLargo((0+cuadroInicioMapa)*unidadMapaGrande,8*unidadMapaGrande,this.scale,g,(18+cuadroInicioMapa)*unidadMapaGrande,1*unidadMapaGrande);
+        this.colisionBloqueLargoCaida = new ColisionBloqueLargo((1+cuadroInicioMapa)*unidadMapaGrande,8*unidadMapaGrande,this.scale,g,(18+cuadroInicioMapa)*unidadMapaGrande,1*unidadMapaGrande);
         //bloque de la derecha
         this.colisionBloqueLargoDerecha = new ColisionBloqueLargo((18+cuadroInicioMapa)*unidadMapaGrande,0*unidadMapaGrande,this.scale,g,1*unidadMapaGrande,8*unidadMapaGrande);
         //bloque de la izquierda
