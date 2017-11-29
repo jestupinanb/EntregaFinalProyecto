@@ -1,7 +1,12 @@
 Nickname 100
 Andres 3000
 Juan 100
-otro 0
-funciona 100
-nuevo 100
-nuevo 100
+Nombre 100
+nuevojuego 100
+nuevojuego 100
+nombre 0
+otroNombre 100
+nick 0
+nicki 0
+222 2700
+222 2700

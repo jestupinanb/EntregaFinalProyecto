@@ -495,7 +495,7 @@ public class Board extends JPanel implements ActionListener {
             }
         }
         return colisionoBoolean;
-    };
+    }
     
     @Override
     public void paintComponent(Graphics g) {
@@ -773,6 +773,7 @@ public class Board extends JPanel implements ActionListener {
             tiempoInmune.cancel();
             guardarScore();
             this.sonidos.musicaFondo.stop();
+            this.sonidos.caminar.stop();
             Iniciar in = new Iniciar();
             in.show();
             this.jframe.dispose();
@@ -824,7 +825,7 @@ public class Board extends JPanel implements ActionListener {
     }
     
     public void pintarEnemigo(Graphics g){
-//        System.out.println("Enemigo posicion "+this.enemigo.posicionXInicio);
+////        System.out.println("Enemigo posicion "+this.enemigo.posicionXInicio);
         enemigo.posicionMovimiento = enemigo.posicionXInicio + enemigo.getCambioPosicionMovimientoX();
         enemigo.posicionXInicio = enemigo.posicionXOriginal-moverImgMapa*unidadMapaGrande+moverMapa;
         g.drawImage(enemigo.getImagen(), enemigo.posicionMovimiento, enemigo.getY(), 50, 50, this);
