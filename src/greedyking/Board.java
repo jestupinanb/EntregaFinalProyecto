@@ -46,7 +46,7 @@ public class Board extends JPanel implements ActionListener {
     private int scale = 4;//El tamaño al que se aumenta el juego 1 = originial, 2 = al doble de grande, 3 = triple de grande etc...
     private int unidadMapaOriginal = 16;//El tile del mapa esta dividido en cuadros de 16x16
     private int unidadMapaGrande = 16*scale;//Tamaño que va a terner el juego al ejecutarse
-    private int delay = 8;
+    private int delay = 16;
     Personaje personaje;//Crear un personaje
     private Timer timer;
     Rectangle personajeColision;
@@ -900,7 +900,7 @@ public class Board extends JPanel implements ActionListener {
             g.drawImage(enemigo.getImagen(), enemigo.posicionMovimiento, enemigo.getY(), enemigo.posicionMovimiento + enemigo.getAncho() * scale, enemigo.getY() + enemigo.getAlto() * scale,
                     enemigo.posImgX(), enemigo.posImgY(), enemigo.posImgX() + enemigo.getAncho(), enemigo.posImgY() + enemigo.getAlto(), this);
             Rectangle rect = new Rectangle(enemigo.posicionMovimiento + 5 * scale, enemigo.getY() + 7 * scale, enemigo.getAncho() * scale - 7 * scale, enemigo.getAlto() * scale - 7 * scale);
-            g.drawRect(rect.x, rect.y, rect.width, rect.height);
+//            g.drawRect(rect.x, rect.y, rect.width, rect.height);
             if (this.personajeColision.intersects(rect)) {
                 perdidaDeVida();
             }
